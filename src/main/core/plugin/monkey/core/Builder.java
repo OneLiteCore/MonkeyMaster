@@ -1,14 +1,8 @@
-package core.plugin.monkey.cmd;
+package core.plugin.monkey.core;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-
-import core.plugin.monkey.log.ConsoleLog;
-import core.plugin.monkey.log.FileLog;
-import core.plugin.monkey.log.Log;
-import core.plugin.monkey.log.LogManager;
-import core.plugin.monkey.log.MultiLog;
 
 /**
  * @author DrkCore
@@ -50,7 +44,7 @@ public class Builder {
         builder.append(count);
         String cmd = builder.toString();
         
-        return new Runner(cmd, device, log, times);
+        return new Runner(cmd, device, logPrinter, times);
     }
 
     /*参数*/
@@ -62,10 +56,10 @@ public class Builder {
         return this;
     }
     
-    private Log log;
+    private LogPrinter logPrinter;
     
-    public Builder setLog(Log log) {
-        this.log = log;
+    public Builder setLogPrinter(LogPrinter logPrinter) {
+        this.logPrinter = logPrinter;
         return this;
     }
     
@@ -158,7 +152,7 @@ public class Builder {
     }
     
     public Builder setScriptLog() {
-        return appendParams("--script-log");
+        return appendParams("--script-logPrinter");
     }
     
     public Builder setPeriodicBugreport() {
@@ -307,15 +301,15 @@ public class Builder {
         return this;
     }
     
-    public Builder addLog(Log log) {
-        if (this.log == null) {
-            this.log = log;
-        } else if (this.log instanceof MultiLog) {
-            ((MultiLog) this.log).add(log);
+    public Builder addLogPrinter(LogPrinter logPrinter) {
+        if (this.logPrinter == null) {
+            this.logPrinter = logPrinter;
+        } else if (this.logPrinter instanceof MultiLogPrinter) {
+            ((MultiLogPrinter) this.logPrinter).add(logPrinter);
         } else {
-            MultiLog multiLogger = new MultiLog(this.log);
-            this.log = multiLogger;
-            multiLogger.add(log);
+            MultiLogPrinter multiLogger = new MultiLogPrinter(this.logPrinter);
+            this.logPrinter = multiLogger;
+            multiLogger.add(logPrinter);
         }
         return this;
     }
@@ -325,15 +319,15 @@ public class Builder {
     }
     
     public Builder addLogFile(File log) {
-        return addLog(new FileLog(log));
+        return addLogPrinter(new FilePrinter(log));
     }
     
-    public Builder addCurrentTimeLogFile() {
+    public Builder addLogFile() {
         return addLogFile(LogManager.getInstance().newLogFile());
     }
     
-    public Builder addConsoleLog() {
-        return addLog(new ConsoleLog());
+    public Builder addConsolePrinter() {
+        return addLogPrinter(new ConsolePrinter());
     }
     
 }

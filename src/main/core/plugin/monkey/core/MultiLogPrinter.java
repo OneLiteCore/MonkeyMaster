@@ -1,4 +1,4 @@
-package core.plugin.monkey.log;
+package core.plugin.monkey.core;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,27 +9,27 @@ import java.util.List;
  * @author DrkCore
  * @since 2017-01-24
  */
-public class MultiLog implements Log {
+public class MultiLogPrinter implements LogPrinter {
     
-    private final List<Log> logs = new ArrayList<>();
+    private final List<LogPrinter> logPrinters = new ArrayList<>();
     
-    public MultiLog(Log... logs) {
-        Collections.addAll(this.logs, logs);
+    public MultiLogPrinter(LogPrinter... logPrinters) {
+        Collections.addAll(this.logPrinters, logPrinters);
     }
     
-    public synchronized void add(Log log) {
-        if (log == this) {
+    public synchronized void add(LogPrinter logPrinter) {
+        if (logPrinter == this) {
             throw new IllegalArgumentException();
         }
-        logs.add(log);
+        logPrinters.add(logPrinter);
     }
     
     @Override
-    public synchronized void write(String line) throws IOException {
+    public synchronized void print(String line) throws IOException {
         IOException firstException = null;
-        for (int i = 0, len = logs.size(); i < len; i++) {
+        for (int i = 0, len = logPrinters.size(); i < len; i++) {
             try {
-                logs.get(i).write(line);
+                logPrinters.get(i).print(line);
             } catch (IOException e) {
                 e.printStackTrace();
                 if (firstException == null) {
@@ -45,9 +45,9 @@ public class MultiLog implements Log {
     @Override
     public synchronized void close() throws IOException {
         IOException firstException = null;
-        for (int i = 0, len = logs.size(); i < len; i++) {
+        for (int i = 0, len = logPrinters.size(); i < len; i++) {
             try {
-                logs.get(i).close();
+                logPrinters.get(i).close();
             } catch (IOException e) {
                 e.printStackTrace();
                 if (firstException == null) {
@@ -63,9 +63,9 @@ public class MultiLog implements Log {
     @Override
     public synchronized void flush() throws IOException {
         IOException firstException = null;
-        for (int i = 0, len = logs.size(); i < len; i++) {
+        for (int i = 0, len = logPrinters.size(); i < len; i++) {
             try {
-                logs.get(i).flush();
+                logPrinters.get(i).flush();
             } catch (IOException e) {
                 e.printStackTrace();
                 if (firstException == null) {

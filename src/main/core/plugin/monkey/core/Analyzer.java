@@ -1,4 +1,4 @@
-package core.plugin.monkey.log;
+package core.plugin.monkey.core;
 
 /**
  * @author DrkCore

@@ -1,4 +1,4 @@
-package core.plugin.monkey.log;
+package core.plugin.monkey.core;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -11,16 +11,16 @@ import java.io.OutputStreamWriter;
  * @author DrkCore
  * @since 2017-01-24
  */
-public class FileLog implements Log {
+public class FilePrinter implements LogPrinter {
     
     private final File file;
     private final boolean append;
     
-    public FileLog(File file) {
+    public FilePrinter(File file) {
         this(file, true);
     }
     
-    public FileLog(File file, boolean append) {
+    public FilePrinter(File file, boolean append) {
         this.file = file;
         this.append = append;
     }
@@ -42,7 +42,7 @@ public class FileLog implements Log {
     }
     
     @Override
-    public synchronized void write(String line) throws IOException {
+    public synchronized void print(String line) throws IOException {
         getWriter().write(line);
         getWriter().write("\n");
     }

@@ -1,8 +1,8 @@
 package core.plugin.monkey;
 
-import core.plugin.monkey.cmd.Monkey;
-import core.plugin.monkey.cmd.Runner;
-import core.plugin.monkey.log.LogManager;
+import core.plugin.monkey.core.Monkey;
+import core.plugin.monkey.core.Runner;
+import core.plugin.monkey.core.LogManager;
 
 /**
  * @author DrkCore
@@ -16,7 +16,7 @@ public class Main {
                 .setIgnoreAll()
                 .setLogAll()
                 .addLogFile(LogManager.getInstance().newLogFile())
-                .addConsoleLog()
+                .addConsolePrinter()
                 .setTotalTime(60 * 1000).build());
         
         Thread.sleep(1000L);
@@ -26,7 +26,7 @@ public class Main {
                 .setIgnoreAll()
                 .setLogAll()
                 .addLogFile(LogManager.getInstance().newLogFile())
-                .addConsoleLog()
+                .addConsolePrinter()
                 .setTotalTime(60 * 1000).build());
     }
     

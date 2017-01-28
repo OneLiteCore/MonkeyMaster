@@ -1,4 +1,4 @@
-package core.plugin.monkey.cmd;
+package core.plugin.monkey.core;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import core.plugin.monkey.util.DataUtil;
 import core.plugin.monkey.util.IOUtil;
@@ -31,8 +29,6 @@ public class Monkey {
     
     /*执行*/
     
-    private ExecutorService executor = Executors.newSingleThreadExecutor();
-    
     void ensureAdb() {
         try {
             Process process = RUNTIME.exec("cmd.exe /c adb start-server");
@@ -45,12 +41,29 @@ public class Monkey {
         }
     }
     
+    private Runner runner;
+    
     public void submit(Runner runner) {
-        executor.submit(runner);
+        clearRunner();
+        this.runner = runner;
+        runner.start();
+    }
+    
+    private void clearRunner() {
+        if (runner != null) {
+            try {
+                runner.interrupt();
+                runner.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                runner = null;
+            }
+        }
     }
     
     public void terminal() throws IOException {
-        executor.shutdown();
+        clearRunner();
         killMonkeyProcess();
     }
     
@@ -117,7 +130,7 @@ public class Monkey {
         return devices;
     }
     
-    public String findFisrtDevices() throws IOException {
+    public String findFirstDevices() throws IOException {
         List<String> devices = findDevices();
         return DataUtil.getFirstQuietly(devices);
     }

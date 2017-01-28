@@ -1,4 +1,4 @@
-package core.plugin.monkey.cmd;
+package core.plugin.monkey.core;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -7,8 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import core.plugin.monkey.log.Log;
 import core.plugin.monkey.util.IOUtil;
+import core.plugin.monkey.util.TextUtil;
 
 /**
  * @author DrkCore
@@ -20,18 +20,18 @@ public class Runner extends Thread {
         return new Builder();
     }
     
-    private final String cmd;
-    private final String device;
+    private String cmd;
+    private String device;
     @Nullable
-    private final Log log;
-    private final int times;
+    private LogPrinter logPrinter;
+    private int times;
     
     private static final int TIMES_INFINITE = Builder.TIMES_INFINITE;
     
-    Runner(String cmd, String device, @Nullable Log log, int times) {
+    Runner(String cmd, String device, @Nullable LogPrinter logPrinter, int times) {
         this.cmd = cmd;
         this.device = device;
-        this.log = log;
+        this.logPrinter = logPrinter;
         this.times = times;
         if (times <= 0) {
             times = TIMES_INFINITE;
@@ -43,13 +43,16 @@ public class Runner extends Thread {
         super.run();
         int times = this.times;
         try {
+            if (TextUtil.isEmpty(device)) {
+                device = Monkey.getInstance().findFirstDevices();
+            }
             while (!isInterrupted() && (times == TIMES_INFINITE || times-- > 0)) {
                 doExec();
             }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            IOUtil.close(log);
+            IOUtil.close(logPrinter);
         }
     }
     
@@ -57,13 +60,13 @@ public class Runner extends Thread {
         BufferedReader reader = null;
         try {
             Process process = Monkey.getInstance().execShell(cmd, device);
-            if (log != null) {
+            if (logPrinter != null) {
                 InputStream in = process.getInputStream();
                 if (in != null) {
                     reader = new BufferedReader(new InputStreamReader(in));
                     String line;
                     while (!isInterrupted() && (line = reader.readLine()) != null) {
-                        log.write(line);
+                        logPrinter.print(line);
                     }
                 }
             }

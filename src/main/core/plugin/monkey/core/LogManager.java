@@ -1,4 +1,4 @@
-package core.plugin.monkey.log;
+package core.plugin.monkey.core;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
