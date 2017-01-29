@@ -14,11 +14,7 @@ import core.plugin.monkey.util.TextUtil;
  * @author DrkCore
  * @since 2017-01-24
  */
-public class Runner extends Thread {
-    
-    public static Builder newBuilder() {
-        return new Builder();
-    }
+class Runner extends Thread {
     
     private String cmd;
     private String device;
@@ -26,7 +22,7 @@ public class Runner extends Thread {
     private LogPrinter logPrinter;
     private int times;
     
-    private static final int TIMES_INFINITE = Builder.TIMES_INFINITE;
+    private static final int TIMES_INFINITE = Monkey.TIMES_INFINITE;
     
     Runner(String cmd, String device, @Nullable LogPrinter logPrinter, int times) {
         this.cmd = cmd;

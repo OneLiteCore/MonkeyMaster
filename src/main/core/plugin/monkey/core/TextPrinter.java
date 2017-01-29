@@ -10,7 +10,7 @@ import javax.swing.JTextArea;
  */
 public class TextPrinter extends SimplePrinter {
     
-    private JTextArea textArea;
+    private final JTextArea textArea;
     private boolean autoScroll = true;
     
     public boolean isAutoScroll() {
@@ -27,15 +27,19 @@ public class TextPrinter extends SimplePrinter {
     }
     
     @Override
-    public synchronized void print(String line) throws IOException {
-        textArea.append(line);
-        textArea.append("\n");
-        if (autoScroll) {
-            textArea.setCaretPosition(textArea.getText().length());
+    public void print(String line) throws IOException {
+        synchronized (textArea) {
+            textArea.append(line);
+            textArea.append("\n");
+            if (autoScroll) {
+                textArea.setCaretPosition(textArea.getText().length());
+            }
         }
     }
     
     public synchronized void clearLog() {
-        textArea.setText("");
+        synchronized (textArea) {
+            textArea.setText("");
+        }
     }
 }

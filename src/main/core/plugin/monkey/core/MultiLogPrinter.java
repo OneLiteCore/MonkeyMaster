@@ -1,5 +1,6 @@
 package core.plugin.monkey.core;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,15 +14,20 @@ public class MultiLogPrinter implements LogPrinter {
     
     private final List<LogPrinter> logPrinters = new ArrayList<>();
     
+    public MultiLogPrinter() {
+        
+    }
+    
     public MultiLogPrinter(LogPrinter... logPrinters) {
         Collections.addAll(this.logPrinters, logPrinters);
     }
     
-    public synchronized void add(LogPrinter logPrinter) {
+    public synchronized MultiLogPrinter add(LogPrinter logPrinter) {
         if (logPrinter == this) {
             throw new IllegalArgumentException();
         }
         logPrinters.add(logPrinter);
+        return this;
     }
     
     @Override
@@ -77,4 +83,24 @@ public class MultiLogPrinter implements LogPrinter {
             throw firstException;
         }
     }
+
+    /*简化*/
+    
+    
+    public MultiLogPrinter addLogFile(String logPath) {
+        return addLogFile(new File(logPath));
+    }
+    
+    public MultiLogPrinter addLogFile(File log) {
+        return add(new FilePrinter(log));
+    }
+    
+    public MultiLogPrinter addCurrentLogFile() {
+        return addLogFile(LogManager.getInstance().newLogFile());
+    }
+    
+    public MultiLogPrinter addConsolePrinter() {
+        return add(new ConsolePrinter());
+    }
+    
 }

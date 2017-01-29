@@ -17,15 +17,16 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import core.plugin.monkey.core.Builder;
 import core.plugin.monkey.core.Monkey;
-import core.plugin.monkey.core.Runner;
+import core.plugin.monkey.core.MultiLogPrinter;
 import core.plugin.monkey.core.TextPrinter;
 
 /**
  * @author DrkCore
  * @since 2017-01-26
  */
-public class MonkeyPanel implements ToolWindowFactory, Condition<Project> {
+public class MonkeyWin implements ToolWindowFactory, Condition<Project> {
     
     private JPanel panel;
     private JButton runBtn;
@@ -40,7 +41,7 @@ public class MonkeyPanel implements ToolWindowFactory, Condition<Project> {
         return panel;
     }
     
-    public MonkeyPanel() {
+    public MonkeyWin() {
         runBtn.addActionListener(e -> start());
         stopBtn.addActionListener(e -> stop());
         settingBtn.addActionListener(e -> setting());
@@ -87,16 +88,19 @@ public class MonkeyPanel implements ToolWindowFactory, Condition<Project> {
     private TextPrinter logPrinter;
     
     private void start() {
-        new SelectDeviceDlg().setCallback(s -> monkey.submit(Runner.newBuilder()
-                .setAllowedPackage("core.demo")
-                .setIgnoreAll()
-                .setLogAll()
-                .addConsolePrinter()
-                .setDevice(s)
-                .addLogPrinter(logPrinter)
-                .setTotalTime(10 * 1000).build())).show();
+        new SelectDeviceDlg().setCallback(s -> {
+            String cmd = new Builder()
+                    .addAllowedPackages("core.demo")
+                    .setIgnoreAll()
+                    .setLogAll()
+                    .setTotalTime(10 * 1000).build();
+            
+            MultiLogPrinter printer = new MultiLogPrinter();
+            printer.addConsolePrinter().add(logPrinter);
+            
+            monkey.submit(cmd, s, printer);
+        }).show();
     }
-    
     
     private void stop() {
         try {
@@ -107,7 +111,7 @@ public class MonkeyPanel implements ToolWindowFactory, Condition<Project> {
     }
     
     private void setting() {
-        
+        new ConfigDlg().show();
     }
     
     private void clearLog() {

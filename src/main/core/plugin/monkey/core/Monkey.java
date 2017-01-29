@@ -43,7 +43,17 @@ public class Monkey {
     
     private Runner runner;
     
-    public void submit(Runner runner) {
+    public void submit(String cmd, String device, LogPrinter printer) {
+        submit(cmd, device, printer, 1);
+    }
+    
+    public static final int TIMES_INFINITE = -1;
+    
+    public void submit(String cmd, String device, LogPrinter printer, int times) {
+        submit(new Runner(cmd, device, printer, times));
+    }
+    
+    private void submit(Runner runner) {
         clearRunner();
         this.runner = runner;
         runner.start();

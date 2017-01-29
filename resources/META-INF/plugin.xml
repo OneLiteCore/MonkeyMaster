@@ -23,12 +23,17 @@
     -->
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow anchor="bottom" conditionClass="core.plugin.monkey.plugin.MonkeyPanel"
-            factoryClass="core.plugin.monkey.plugin.MonkeyPanel" id="Monkey" />
+        <toolWindow anchor="bottom" conditionClass="core.plugin.monkey.plugin.MonkeyWin"
+            factoryClass="core.plugin.monkey.plugin.MonkeyWin" id="Monkey" />
     </extensions>
 
     <actions>
         <!-- Add your actions here -->
     </actions>
 
+    <application-components>
+        <component>
+            <implementation-class>core.plugin.monkey.plugin.App</implementation-class>
+        </component>
+    </application-components>
 </idea-plugin>
