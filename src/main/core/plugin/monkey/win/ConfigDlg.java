@@ -1,4 +1,4 @@
-package core.plugin.monkey.plugin;
+package core.plugin.monkey.win;
 
 import com.intellij.openapi.ui.DialogWrapper;
 
@@ -12,9 +12,6 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import core.plugin.monkey.core.Builder;
-import core.plugin.monkey.plugin.config.IgnorePanel;
-import core.plugin.monkey.plugin.config.MainPanel;
-import core.plugin.monkey.plugin.config.PercentPanel;
 
 /**
  * @author DrkCore

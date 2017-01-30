@@ -1,13 +1,4 @@
-package core.plugin.monkey.plugin;
-
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Condition;
-import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ToolWindowFactory;
-import com.intellij.ui.content.Content;
-import com.intellij.ui.content.ContentManager;
-
-import org.jetbrains.annotations.NotNull;
+package core.plugin.monkey.win;
 
 import java.io.IOException;
 
@@ -26,9 +17,9 @@ import core.plugin.monkey.core.TextPrinter;
  * @author DrkCore
  * @since 2017-01-26
  */
-public class MonkeyWin implements ToolWindowFactory, Condition<Project> {
+public class MonkeyWin {
     
-    private JPanel panel;
+    private JPanel contentPanel;
     private JButton runBtn;
     private JButton stopBtn;
     private JScrollPane scrollPanel;
@@ -37,8 +28,8 @@ public class MonkeyWin implements ToolWindowFactory, Condition<Project> {
     private JButton clearBtn;
     private JCheckBox scrollCheckBox;
     
-    public JPanel getPanel() {
-        return panel;
+    public JPanel getContentPanel() {
+        return contentPanel;
     }
     
     public MonkeyWin() {
@@ -53,33 +44,6 @@ public class MonkeyWin implements ToolWindowFactory, Condition<Project> {
             System.out.println(scrollCheckBox.isSelected());
             logPrinter.setAutoScroll(scrollCheckBox.isSelected());
         });
-    }
-    
-    @Override
-    public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
-        ContentManager mgr = toolWindow.getContentManager();
-        Content content = mgr.getFactory().createContent(panel, "", false);
-        mgr.addContent(content);
-    }
-    
-    @Override
-    public void init(ToolWindow window) {
-        
-    }
-    
-    @Override
-    public boolean shouldBeAvailable(@NotNull Project project) {
-        return true;
-    }
-    
-    @Override
-    public boolean isDoNotActivateOnStart() {
-        return true;
-    }
-    
-    @Override
-    public boolean value(Project project) {
-        return true;
     }
     
     /*运行*/

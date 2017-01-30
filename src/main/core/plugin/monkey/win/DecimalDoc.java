@@ -1,4 +1,4 @@
-package core.plugin.monkey.plugin.base;
+package core.plugin.monkey.win;
 
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;

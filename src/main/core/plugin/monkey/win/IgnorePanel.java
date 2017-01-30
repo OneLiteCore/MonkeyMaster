@@ -1,10 +1,9 @@
-package core.plugin.monkey.plugin.config;
+package core.plugin.monkey.win;
 
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
 import core.plugin.monkey.core.Builder;
-import core.plugin.monkey.plugin.ConfigDlg;
 
 /**
  * @author DrkCore
@@ -12,28 +11,28 @@ import core.plugin.monkey.plugin.ConfigDlg;
  */
 public class IgnorePanel extends JPanel implements ConfigDlg.ConfigPanel {
     
-    private JCheckBox ignoreCrashsCheckBox;
+    private JCheckBox ignoreCrashesCheckBox;
     private JCheckBox ignoreTimeoutsCheckBox;
     private JCheckBox ignoreSecurityExceptionsCheckBox;
-    private JCheckBox monitorNativeCrashsCheckBox;
+    private JCheckBox monitorNativeCrashesCheckBox;
     private JPanel contentPanel;
-    private JCheckBox ignoreNativeCrashsCheckBox;
+    private JCheckBox ignoreNativeCrashesCheckBox;
     
     @Override
     public void adapt(Builder config) {
-        ignoreCrashsCheckBox.setSelected(config.isIgnoreCrashes());
+        ignoreCrashesCheckBox.setSelected(config.isIgnoreCrashes());
         ignoreTimeoutsCheckBox.setSelected(config.isIgnoreTimeouts());
         ignoreSecurityExceptionsCheckBox.setSelected(config.isIgnoreSecurityExceptions());
-        monitorNativeCrashsCheckBox.setSelected(config.isMonitorNativeCrashes());
-        ignoreNativeCrashsCheckBox.setSelected(config.isIgnoreNativeCrashes());
+        monitorNativeCrashesCheckBox.setSelected(config.isMonitorNativeCrashes());
+        ignoreNativeCrashesCheckBox.setSelected(config.isIgnoreNativeCrashes());
     }
     
     @Override
     public void apply(Builder config) {
-        config.setIgnoreCrashes(ignoreCrashsCheckBox.isSelected());
+        config.setIgnoreCrashes(ignoreCrashesCheckBox.isSelected());
         config.setIgnoreTimeouts(ignoreTimeoutsCheckBox.isSelected());
         config.setIgnoreSecurityExceptions(ignoreSecurityExceptionsCheckBox.isSelected());
-        config.setMonitorNativeCrashes(monitorNativeCrashsCheckBox.isSelected());
-        config.setIgnoreNativeCrashes(ignoreNativeCrashsCheckBox.isSelected());
+        config.setMonitorNativeCrashes(monitorNativeCrashesCheckBox.isSelected());
+        config.setIgnoreNativeCrashes(ignoreNativeCrashesCheckBox.isSelected());
     }
 }

@@ -1,11 +1,10 @@
-package core.plugin.monkey.plugin.config;
+package core.plugin.monkey.win;
 
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 
 import core.plugin.monkey.core.Builder;
-import core.plugin.monkey.plugin.ConfigDlg;
 
 /**
  * @author DrkCore

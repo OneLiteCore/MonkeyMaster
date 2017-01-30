@@ -1,4 +1,4 @@
-package core.plugin.monkey.plugin;
+package core.plugin.monkey.win;
 
 import com.intellij.openapi.ui.DialogWrapper;
 

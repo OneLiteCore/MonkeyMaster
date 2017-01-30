@@ -1,4 +1,4 @@
-package core.plugin.monkey.plugin.config;
+package core.plugin.monkey.win;
 
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.ui.TextBrowseFolderListener;
@@ -16,8 +16,6 @@ import javax.swing.JTextField;
 
 import core.plugin.monkey.core.Builder;
 import core.plugin.monkey.core.LogLevel;
-import core.plugin.monkey.plugin.ConfigDlg;
-import core.plugin.monkey.plugin.base.DecimalDoc;
 import core.plugin.monkey.util.DataUtil;
 import core.plugin.monkey.util.TextUtil;
 

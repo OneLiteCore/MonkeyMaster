@@ -1,4 +1,4 @@
-package core.plugin.monkey.plugin;
+package core.plugin.monkey;
 
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ApplicationComponent;
@@ -16,7 +16,7 @@ import core.plugin.monkey.core.Config;
  * @author DrkCore
  * @since 2017-01-26
  */
-@State(name = "config", storages = @Storage(id = "config", file = StoragePathMacros.WORKSPACE_FILE + "/config.xml"))
+@State(name = "win", storages = @Storage(id = "win", file = StoragePathMacros.WORKSPACE_FILE + "/win.xml"))
 public class App implements ApplicationComponent, PersistentStateComponent<Config> {
     
     public static App getInstance() {

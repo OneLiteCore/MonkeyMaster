@@ -23,8 +23,8 @@
     -->
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow anchor="bottom" conditionClass="core.plugin.monkey.plugin.MonkeyWin"
-            factoryClass="core.plugin.monkey.plugin.MonkeyWin" id="Monkey" />
+        <toolWindow anchor="bottom" conditionClass="core.plugin.monkey.WinFactory"
+            factoryClass="core.plugin.monkey.WinFactory" id="Monkey" />
     </extensions>
 
     <actions>
@@ -33,7 +33,7 @@
 
     <application-components>
         <component>
-            <implementation-class>core.plugin.monkey.plugin.App</implementation-class>
+            <implementation-class>core.plugin.monkey.App</implementation-class>
         </component>
     </application-components>
 </idea-plugin>
