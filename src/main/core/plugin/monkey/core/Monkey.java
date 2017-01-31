@@ -1,15 +1,17 @@
 package core.plugin.monkey.core;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import core.plugin.monkey.util.DataUtil;
 import core.plugin.monkey.util.IOUtil;
+import core.plugin.monkey.util.TextUtil;
 
 /**
  * @author DrkCore
@@ -17,46 +19,39 @@ import core.plugin.monkey.util.IOUtil;
  */
 public class Monkey {
     
-    private static final Monkey INSTANCE = new Monkey();
-    private static final Runtime RUNTIME = Runtime.getRuntime();
+    private String device;
     
-    private Monkey() {
+    public String getDevice() {
+        return device;
     }
     
-    public static Monkey getInstance() {
-        return INSTANCE;
-    }
-    
-    /*执行*/
-    
-    void ensureAdb() {
-        try {
-            Process process = RUNTIME.exec("cmd.exe /c adb start-server");
-            //读出缓冲区数据并等待进结束
-            IOUtil.readQuietly(process.getInputStream());
-            IOUtil.readQuietly(process.getErrorStream());
-            process.waitFor();
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+    public Monkey(String device) {
+        if (TextUtil.isEmpty(device)) {
+            throw new IllegalArgumentException("Device must not be null");
         }
+        this.device = device;
     }
+    
+    /*exec*/
     
     private Runner runner;
     
-    public void submit(String cmd, String device, LogPrinter printer) {
-        submit(cmd, device, printer, 1);
-    }
-    
     public static final int TIMES_INFINITE = -1;
     
-    public void submit(String cmd, String device, LogPrinter printer, int times) {
-        submit(new Runner(cmd, device, printer, times));
+    public void submit(String cmd, LogPrinter printer) {
+        submit(cmd, printer, 1);
     }
+    
+    public void submit(String cmd, LogPrinter printer, int times) {
+        submit(new Runner(this, cmd, printer, times));
+    }
+    
+    private ExecutorService executor = Executors.newSingleThreadExecutor();
     
     private void submit(Runner runner) {
         clearRunner();
         this.runner = runner;
-        runner.start();
+        executor.submit(runner);
     }
     
     private void clearRunner() {
@@ -78,30 +73,22 @@ public class Monkey {
     }
     
     Process execShell(String cmd) throws IOException {
-        return execShell(cmd, null);
-    }
-    
-    Process execShell(String cmd, @Nullable String device) throws IOException {
         ensureAdb();
-        StringBuilder builder = new StringBuilder().append("cmd.exe /c adb ");
-        if (device != null) {
-            builder.append("-s ").append(device).append(" ");
-        }
-        builder.append("shell ").append(cmd);
-        return RUNTIME.exec(builder.toString());
+        cmd = "cmd.exe /c adb -s " + device + " shell " + cmd;
+        return RUNTIME.exec(cmd);
     }
     
-    public void killMonkeyProcess() throws IOException {
+    void killMonkeyProcess() throws IOException {
         ensureAdb();
         String pid = findMonkeyPid();
         if (pid != null) {
-            RUNTIME.exec("cmd.exe /c adb shell kill " + pid);
+            RUNTIME.exec("cmd.exe /c adb -s " + device + " shell kill " + pid);
         }
     }
     
     String findMonkeyPid() throws IOException {
         ensureAdb();
-        Process process = RUNTIME.exec("cmd.exe /c adb shell \"ps|grep monkey\"");
+        Process process = RUNTIME.exec("cmd.exe /c adb -s " + device + " shell \"ps|grep monkey\"");
         String info = IOUtil.readQuietly(process.getInputStream(), Charset.defaultCharset());
         //root      9542  76    1234904 40084 ffffffff b7726369 S com.android.commands.monkey
         String[] items = info != null ? info.split(" ") : null;
@@ -118,8 +105,24 @@ public class Monkey {
         return pid;
     }
     
+    /*cmd*/
+    
+    private static final Runtime RUNTIME = Runtime.getRuntime();
+    
+    private static void ensureAdb() {
+        try {
+            Process process = RUNTIME.exec("cmd.exe /c adb start-server");
+            //读出缓冲区数据并等待进结束
+            IOUtil.readQuietly(process.getInputStream());
+            IOUtil.readQuietly(process.getErrorStream());
+            process.waitFor();
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+    
     @NotNull
-    public List<String> findDevices() throws IOException {
+    public static List<String> findDevices() throws IOException {
         ensureAdb();
         Process process = RUNTIME.exec("cmd.exe /c adb devices");
         String info = IOUtil.readQuietly(process.getInputStream(), Charset.defaultCharset());
@@ -140,7 +143,7 @@ public class Monkey {
         return devices;
     }
     
-    public String findFirstDevices() throws IOException {
+    public static String findFirstDevices() throws IOException {
         List<String> devices = findDevices();
         return DataUtil.getFirstQuietly(devices);
     }

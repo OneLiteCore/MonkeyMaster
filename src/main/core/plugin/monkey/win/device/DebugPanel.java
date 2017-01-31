@@ -1,4 +1,4 @@
-package core.plugin.monkey.win;
+package core.plugin.monkey.win.device;
 
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
@@ -9,7 +9,7 @@ import core.plugin.monkey.core.Builder;
  * @author DrkCore
  * @since 2017-01-28
  */
-public class IgnorePanel extends JPanel implements ConfigDlg.ConfigPanel {
+public class DebugPanel extends JPanel implements BuilderDlg.ConfigPanel {
     
     private JCheckBox ignoreCrashesCheckBox;
     private JCheckBox ignoreTimeoutsCheckBox;

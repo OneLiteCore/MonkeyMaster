@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import core.plugin.monkey.util.IOUtil;
-import core.plugin.monkey.util.TextUtil;
 
 /**
  * @author DrkCore
@@ -16,53 +15,81 @@ import core.plugin.monkey.util.TextUtil;
  */
 class Runner extends Thread {
     
-    private String cmd;
-    private String device;
+    private final Monkey monkey;
+    private final String cmd;
     @Nullable
-    private LogPrinter logPrinter;
-    private int times;
+    private final LogPrinter printer;
+    private final int times;
+    
+    public String getCmd() {
+        return cmd;
+    }
+    
+    public int getTimes() {
+        return times;
+    }
     
     private static final int TIMES_INFINITE = Monkey.TIMES_INFINITE;
     
-    Runner(String cmd, String device, @Nullable LogPrinter logPrinter, int times) {
+    Runner(Monkey monkey, String cmd, @Nullable LogPrinter printer, int times) {
+        this.monkey = monkey;
         this.cmd = cmd;
-        this.device = device;
-        this.logPrinter = logPrinter;
-        this.times = times;
+        this.printer = printer;
         if (times <= 0) {
             times = TIMES_INFINITE;
         }
+        this.times = times;
+    }
+    
+    interface Listener{
+        
+        void onStart(Runner runner);
+        
+        void onDone(Runner runner);
+        
+    }
+    
+    private Listener listener;
+    
+    public Runner setListener(Listener listener) {
+        this.listener = listener;
+        return this;
     }
     
     @Override
     public void run() {
         super.run();
+        if(listener != null){
+            listener.onStart(this);
+        }
+        
         int times = this.times;
         try {
-            if (TextUtil.isEmpty(device)) {
-                device = Monkey.getInstance().findFirstDevices();
-            }
-            while (!isInterrupted() && (times == TIMES_INFINITE || times-- > 0)) {
+            while (!isInterrupted() && (this.times == TIMES_INFINITE || times-- > 0)) {
                 doExec();
             }
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            IOUtil.close(logPrinter);
+        }finally {
+            IOUtil.close(printer);
+        }
+    
+        if(listener != null){
+            listener.onDone(this);
         }
     }
     
     private void doExec() throws IOException {
         BufferedReader reader = null;
         try {
-            Process process = Monkey.getInstance().execShell(cmd, device);
-            if (logPrinter != null) {
+            Process process = monkey.execShell(cmd);
+            if (printer != null) {
                 InputStream in = process.getInputStream();
                 if (in != null) {
                     reader = new BufferedReader(new InputStreamReader(in));
                     String line;
                     while (!isInterrupted() && (line = reader.readLine()) != null) {
-                        logPrinter.print(line);
+                        printer.print(line);
                     }
                 }
             }

@@ -1,6 +1,4 @@
-package core.plugin.monkey.win;
-
-import com.intellij.openapi.ui.DialogWrapper;
+package core.plugin.monkey.win.device;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,12 +10,13 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import core.plugin.monkey.core.Builder;
+import core.plugin.monkey.win.base.BaseDlg;
 
 /**
  * @author DrkCore
  * @since 2017-01-28
  */
-public class ConfigDlg extends DialogWrapper {
+public class BuilderDlg extends BaseDlg {
     
     public interface ConfigPanel {
         
@@ -28,23 +27,35 @@ public class ConfigDlg extends DialogWrapper {
     }
     
     private JPanel contentPanel;
-    private MainPanel mainPanel;
-    private IgnorePanel ignorePanel;
-    private PercentPanel percentPanel;
+    private GeneralPanel generalPanel;
+    private DebugPanel debugPanel;
+    private EventPanel eventPanel;
     
     private final Builder config;
     
-    protected ConfigDlg() {
+    public BuilderDlg() {
         this(null);
     }
     
-    protected ConfigDlg(Builder config) {
-        super(false);
+    public BuilderDlg(@Nullable Builder config) {
         init();
         setTitle("Config Monkey Runner");
         pack();
-      
-        this.config = config != null?config.clone():new Builder();
+        
+        this.config = config != null ? config.clone() : new Builder();
+    }
+    
+    public interface Listener {
+        
+        void onBuilt(Builder config, String cmd);
+        
+    }
+    
+    private Listener listener;
+    
+    public BuilderDlg setListener(Listener listener) {
+        this.listener = listener;
+        return this;
     }
     
     @NotNull
@@ -54,7 +65,13 @@ public class ConfigDlg extends DialogWrapper {
             
             @Override
             protected void doAction(ActionEvent actionEvent) {
-                run();
+                dispose();
+                generalPanel.apply(config);
+                debugPanel.apply(config);
+                eventPanel.apply(config);
+                if (listener != null) {
+                    listener.onBuilt(config, config.build());
+                }
             }
         }, getCancelAction()};
     }
@@ -65,11 +82,4 @@ public class ConfigDlg extends DialogWrapper {
         return contentPanel;
     }
     
-    private void run() {
-        Builder config = new Builder();
-        mainPanel.apply(config);
-        ignorePanel.apply(config);
-        percentPanel.apply(config);
-        System.out.println(config.build());
-    }
 }

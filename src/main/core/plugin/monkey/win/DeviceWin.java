@@ -10,14 +10,15 @@ import javax.swing.JTextArea;
 
 import core.plugin.monkey.core.Builder;
 import core.plugin.monkey.core.Monkey;
-import core.plugin.monkey.core.MultiLogPrinter;
 import core.plugin.monkey.core.TextPrinter;
+import core.plugin.monkey.win.base.BaseWin;
+import core.plugin.monkey.win.device.BuilderDlg;
 
 /**
  * @author DrkCore
  * @since 2017-01-26
  */
-public class MonkeyWin {
+public class DeviceWin extends BaseWin {
     
     private JPanel contentPanel;
     private JButton runBtn;
@@ -28,15 +29,23 @@ public class MonkeyWin {
     private JButton clearBtn;
     private JCheckBox scrollCheckBox;
     
+    public static final String TAG_DEVICE = "Device:";
+    private final String device;
+    private final Monkey monkey;
+    
+    @Override
     public JPanel getContentPanel() {
         return contentPanel;
     }
     
-    public MonkeyWin() {
-        runBtn.addActionListener(e -> start());
+    public DeviceWin(String device) {
+        super(TAG_DEVICE + device);
+        this.device = device;
+        this.monkey = new Monkey(device);
+        runBtn.addActionListener(e -> startMonkey(false));
         stopBtn.addActionListener(e -> stop());
-        settingBtn.addActionListener(e -> setting());
-        clearBtn.addActionListener(e -> clearLog());
+        settingBtn.addActionListener(e -> startMonkey(true));
+        clearBtn.addActionListener(e -> logPrinter.clearLog());
         
         logPrinter = new TextPrinter(logTextArea);
         
@@ -48,22 +57,23 @@ public class MonkeyWin {
     
     /*运行*/
     
-    private final Monkey monkey = Monkey.getInstance();
     private TextPrinter logPrinter;
+    private Builder config;
     
-    private void start() {
-        new SelectDeviceDlg().setCallback(s -> {
-            String cmd = new Builder()
-                    .addAllowedPackages("core.demo")
-                    .setIgnoreAll()
-                    .setLogAll()
-                    .setTotalTime(10 * 1000).build();
-            
-            MultiLogPrinter printer = new MultiLogPrinter();
-            printer.addConsolePrinter().add(logPrinter);
-            
-            monkey.submit(cmd, s, printer);
-        }).show();
+    private void startMonkey(boolean needConfig) {
+        if (config == null) {
+            needConfig = true;
+        }
+        
+        if (needConfig) {
+            new BuilderDlg().setListener((config, cmd) -> {
+                DeviceWin.this.config = config;
+                monkey.submit(cmd, logPrinter);
+            }).show();
+        } else {
+            String cmd = config.build();
+            monkey.submit(cmd, logPrinter);
+        }
     }
     
     private void stop() {
@@ -74,11 +84,4 @@ public class MonkeyWin {
         }
     }
     
-    private void setting() {
-        new ConfigDlg().show();
-    }
-    
-    private void clearLog() {
-        logPrinter.clearLog();
-    }
 }

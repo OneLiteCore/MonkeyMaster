@@ -1,4 +1,4 @@
-package core.plugin.monkey.win;
+package core.plugin.monkey.win.device;
 
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
@@ -10,7 +10,7 @@ import core.plugin.monkey.core.Builder;
  * @author DrkCore
  * @since 2017-01-28
  */
-public class PercentPanel extends JPanel implements ConfigDlg.ConfigPanel {
+public class EventPanel extends JPanel implements BuilderDlg.ConfigPanel {
     
     private JPanel contentPanel;
     private JSlider touchPctSlider;
@@ -36,12 +36,12 @@ public class PercentPanel extends JPanel implements ConfigDlg.ConfigPanel {
     
     private Builder config;
     
-    public PercentPanel setConfig(Builder config) {
+    public EventPanel setConfig(Builder config) {
         this.config = config;
         return this;
     }
     
-    public PercentPanel() {
+    public EventPanel() {
         bind(touchPercentCheckBox, touchPctSlider);
         bind(motionPercentCheckBox, motionPctSlider);
         bind(trackballPercentCheckBox, trackballPctSlider);

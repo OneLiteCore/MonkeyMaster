@@ -1,12 +1,5 @@
-package core.plugin.monkey.win;
+package core.plugin.monkey.win.device;
 
-import com.intellij.openapi.fileChooser.FileChooserDescriptor;
-import com.intellij.openapi.ui.TextBrowseFolderListener;
-import com.intellij.openapi.ui.TextFieldWithBrowseButton;
-
-import org.jetbrains.annotations.Nullable;
-
-import java.io.File;
 import java.util.List;
 
 import javax.swing.JComboBox;
@@ -18,25 +11,22 @@ import core.plugin.monkey.core.Builder;
 import core.plugin.monkey.core.LogLevel;
 import core.plugin.monkey.util.DataUtil;
 import core.plugin.monkey.util.TextUtil;
+import core.plugin.monkey.win.base.DecimalDoc;
 
 /**
  * @author DrkCore
  * @since 2017-01-28
  */
-public class MainPanel extends JPanel implements ConfigDlg.ConfigPanel {
-    
-    private static final FileChooserDescriptor DESCRIPTOR = new FileChooserDescriptor(false, true, false, false, false, false);
+public class GeneralPanel extends JPanel implements BuilderDlg.ConfigPanel {
     
     private JPanel contentPanel;
     private JTextField pkgsTxt;
     private JTextField categoriesTxt;
     private JComboBox logLevelCombo;
-    private TextFieldWithBrowseButton choseFileTxt;
     private JFormattedTextField throttleTxt;
     private JFormattedTextField countTxt;
     
-    public MainPanel() {
-        choseFileTxt.addBrowseFolderListener(new TextBrowseFolderListener(DESCRIPTOR));
+    public GeneralPanel() {
         throttleTxt.setDocument(new DecimalDoc());
         countTxt.setDocument(new DecimalDoc());
     }
@@ -91,13 +81,5 @@ public class MainPanel extends JPanel implements ConfigDlg.ConfigPanel {
         int idx = logLevelCombo.getSelectedIndex();
         config.setLogLevel(LogLevel.values()[idx]);
     }
-    
-    @Nullable
-    public File getOutputDir() {
-        String path = choseFileTxt.getText();
-        File dir = !TextUtil.isEmpty(path) ? new File(path) : null;
-        return dir != null && dir.isDirectory() ? dir : null;
-    }
-    
     
 }

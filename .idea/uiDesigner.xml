@@ -121,13 +121,13 @@
       </item>
     </group>
     <group name="config">
-      <item class="core.plugin.monkey.plugin.config.IgnorePanel" icon="" removable="true" auto-create-binding="false" can-attach-label="false">
+      <item class="core.plugin.monkey.plugin.win.IgnorePanel" icon="" removable="true" auto-create-binding="false" can-attach-label="false">
         <default-constraints vsize-policy="3" hsize-policy="3" anchor="0" fill="0" />
       </item>
-      <item class="core.plugin.monkey.plugin.config.PercentPanel" icon="/com/intellij/uiDesigner/icons/panel.png" removable="true" auto-create-binding="false" can-attach-label="false">
+      <item class="core.plugin.monkey.plugin.win.PercentPanel" icon="/com/intellij/uiDesigner/icons/panel.png" removable="true" auto-create-binding="false" can-attach-label="false">
         <default-constraints vsize-policy="3" hsize-policy="3" anchor="0" fill="0" />
       </item>
-      <item class="core.plugin.monkey.plugin.config.MainPanel" icon="/com/intellij/uiDesigner/icons/panel.png" removable="true" auto-create-binding="false" can-attach-label="false">
+      <item class="core.plugin.monkey.win.MainPanel" icon="/com/intellij/uiDesigner/icons/panel.png" removable="true" auto-create-binding="false" can-attach-label="false">
         <default-constraints vsize-policy="0" hsize-policy="0" anchor="0" fill="0" />
       </item>
       <item class="com.intellij.openapi.ui.TextFieldWithBrowseButton" icon="/com/intellij/uiDesigner/icons/panel.png" removable="true" auto-create-binding="false" can-attach-label="false">

@@ -1,6 +1,4 @@
-package core.plugin.monkey.win;
-
-import com.intellij.openapi.ui.DialogWrapper;
+package core.plugin.monkey.win.console;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -17,17 +15,18 @@ import core.plugin.monkey.util.Callback;
 import core.plugin.monkey.util.DataUtil;
 import core.plugin.monkey.util.SimpleCallback;
 import core.plugin.monkey.util.TextUtil;
+import core.plugin.monkey.win.base.BaseDlg;
 
-public class SelectDeviceDlg extends DialogWrapper {
+public class SelectDeviceDlg extends BaseDlg {
     
     private JPanel contentPane;
     private JList deviceList;
     
     public SelectDeviceDlg() {
-        super(false);
         init();
-        setTitle("Select Device to Run Monkey Test");
+        setTitle("Devices");
         pack();
+        setResizable(false);
         
         refresh();
     }
@@ -38,7 +37,7 @@ public class SelectDeviceDlg extends DialogWrapper {
     public void refresh() {
         model.clear();
         try {
-            List<String> devices = Monkey.getInstance().findDevices();
+            List<String> devices = Monkey.findDevices();
             if (!DataUtil.isEmpty(devices)) {
                 devices.forEach(model::addElement);
             }
