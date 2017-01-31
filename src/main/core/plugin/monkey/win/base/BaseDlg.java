@@ -8,11 +8,25 @@ import com.intellij.openapi.ui.DialogWrapper;
  */
 public abstract class BaseDlg extends DialogWrapper {
     
-    protected BaseDlg() {
-        this(false);
+    protected BaseDlg(String title) {
+        this(title, false);
     }
     
-    protected BaseDlg(boolean canBeParent) {
+    protected BaseDlg(String title, boolean canBeParent) {
         super(canBeParent);
+        setTitle(title);
+        setResizable(false);
+    }
+    
+    private boolean initFlag;
+    
+    @Override
+    public void show() {
+        if(!initFlag){
+            initFlag = true;
+            init();
+            pack();
+        }
+        super.show();
     }
 }

@@ -38,9 +38,7 @@ public class BuilderDlg extends BaseDlg {
     }
     
     public BuilderDlg(@Nullable Builder config) {
-        init();
-        setTitle("Config Monkey Runner");
-        pack();
+        super("Config Monkey Runner");
         
         this.config = config != null ? config.clone() : new Builder();
     }

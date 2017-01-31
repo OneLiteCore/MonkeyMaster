@@ -1,12 +1,17 @@
 package core.plugin.monkey.win.console;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.CardLayout;
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.List;
 
+import javax.swing.Action;
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 
@@ -19,16 +24,34 @@ import core.plugin.monkey.win.base.BaseDlg;
 
 public class SelectDeviceDlg extends BaseDlg {
     
-    private JPanel contentPane;
+    private JPanel contentPanel;
     private JList deviceList;
+    private JLabel emptyLabel;
+    
+    private static final String CARD_DEVICES = "deviceListCard";
+    private static final String CARD_EMPTY = "emptyLabelCard";
     
     public SelectDeviceDlg() {
-        init();
-        setTitle("Devices");
-        pack();
-        setResizable(false);
-        
+        super("Devices");
+        setSize(240, 160);
         refresh();
+    }
+    
+    @Nullable
+    @Override
+    protected JComponent createCenterPanel() {
+        return contentPanel;
+    }
+    
+    @NotNull
+    @Override
+    protected Action[] createLeftSideActions() {
+        return new Action[]{new DialogWrapperAction("Refresh") {
+            @Override
+            protected void doAction(ActionEvent actionEvent) {
+                refresh();
+            }
+        }};
     }
     
     private DefaultListModel<String> model = new DefaultListModel<>();
@@ -45,12 +68,9 @@ public class SelectDeviceDlg extends BaseDlg {
             e.printStackTrace();
         }
         deviceList.setModel(model);
-    }
-    
-    @Nullable
-    @Override
-    protected JComponent createCenterPanel() {
-        return contentPane;
+        
+        CardLayout layout = (CardLayout) contentPanel.getLayout();
+        layout.show(contentPanel, !model.isEmpty() ? CARD_DEVICES : CARD_EMPTY);
     }
     
     private Callback<String> callback;
@@ -70,5 +90,6 @@ public class SelectDeviceDlg extends BaseDlg {
             SimpleCallback.call(device, callback);
         }
     }
+    
 }
 
