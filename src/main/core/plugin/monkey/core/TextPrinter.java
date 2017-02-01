@@ -1,14 +1,12 @@
 package core.plugin.monkey.core;
 
-import java.io.IOException;
-
 import javax.swing.JTextArea;
 
 /**
  * @author DrkCore
  * @since 2017-01-26
  */
-public class TextPrinter extends SimplePrinter {
+public class TextPrinter extends SimpleRunnerListener {
     
     private final JTextArea textArea;
     private boolean autoScroll = true;
@@ -27,7 +25,8 @@ public class TextPrinter extends SimplePrinter {
     }
     
     @Override
-    public void print(String line) throws IOException {
+    public void print(String line) {
+        super.print(line);
         synchronized (textArea) {
             textArea.append(line);
             textArea.append("\n");

@@ -1,5 +1,6 @@
 package core.plugin.monkey.win.base;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.ui.content.Content;
 
 import javax.swing.JPanel;
@@ -24,8 +25,13 @@ public abstract class BaseWin implements Icons {
         this.title = title;
     }
     
+    private Project project;
     private WinFactory factory;
     private Content content;
+    
+    public Project getProject() {
+        return project;
+    }
     
     public WinFactory getFactory() {
         return factory;
@@ -35,10 +41,11 @@ public abstract class BaseWin implements Icons {
         return content;
     }
     
-    public void onAttached(WinFactory factory, Content content) {
-        if (this.factory != null || this.content != null) {
+    public void onAttached(Project project, WinFactory factory, Content content) {
+        if (this.project != null ||this.factory != null || this.content != null) {
             throw new IllegalStateException("Win could only be attached once");
         }
+        this.project=project;
         this.factory = factory;
         this.content = content;
     }

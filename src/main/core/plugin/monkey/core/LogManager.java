@@ -18,23 +18,32 @@ public class LogManager {
         return INSTANCE;
     }
     
-    private File outputDir;
-    
-    public File getOutputDir() {
-        if (outputDir == null) {
-            outputDir = new File("monkey");
-        }
-        if(!outputDir.isDirectory()){
-            outputDir.mkdirs();
-        }
-        return outputDir;
-    }
-    
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+    public static final String LOG_DIR = "/monkey";
     public static final String LOG_EXT = "log";
     
-    public File newLogFile() {
-        String name = dateFormat.format(System.currentTimeMillis()) + "." + LOG_EXT;
-        return new File(getOutputDir(), name);
+    private String lastLog;
+    private long lastTime;
+    
+    public synchronized String newLogName() {
+        long time = System.currentTimeMillis();
+        if (time < lastTime) {
+            time = lastTime + 1000;
+        }
+        String log = dateFormat.format(time);
+        while (log.equals(lastLog)) {
+            time += 1000;
+            log = dateFormat.format(time);
+        }
+        lastLog = log;
+        lastTime = time;
+        String name = log + "." + LOG_EXT;
+        return name;
+    }
+    
+    public File newLogFile(String projectDir) {
+        projectDir += LOG_DIR;
+        String name = newLogName();
+        return new File(projectDir, name);
     }
 }

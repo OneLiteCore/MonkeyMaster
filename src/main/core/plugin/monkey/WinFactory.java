@@ -22,6 +22,7 @@ import core.plugin.monkey.win.base.BaseWin;
  */
 public class WinFactory implements ToolWindowFactory, Condition<Project> {
     
+    private Project project;
     private ToolWindow toolWin;
     private ContentManager mgr;
     
@@ -35,6 +36,7 @@ public class WinFactory implements ToolWindowFactory, Condition<Project> {
     
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
+        this.project = project;
         this.toolWin = toolWindow;
         this.mgr = toolWin.getContentManager();
         
@@ -68,7 +70,7 @@ public class WinFactory implements ToolWindowFactory, Condition<Project> {
     
     public void attach(BaseWin win, boolean focus) {
         Content content = mgr.getFactory().createContent(win.getContentPanel(), win.getTitle(), false);
-        win.onAttached(this, content);
+        win.onAttached(project, this, content);
         mgr.addContent(content);
         
         if (focus) {

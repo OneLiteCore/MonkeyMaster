@@ -1,15 +1,14 @@
 package core.plugin.monkey.core;
 
-import java.io.IOException;
-
 /**
  * @author DrkCore
  * @since 2017-01-24
  */
-public class ConsolePrinter extends SimplePrinter{
+public class ConsolePrinter extends SimpleRunnerListener {
     
     @Override
-    public void print(String line) throws IOException {
+    public void print(String line) {
+        super.print(line);
         System.out.println(line);
     }
 }

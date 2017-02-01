@@ -1,5 +1,9 @@
 package core.plugin.monkey.win;
 
+import com.intellij.openapi.project.Project;
+import com.intellij.ui.content.Content;
+
+import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JButton;
@@ -8,7 +12,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import core.plugin.monkey.WinFactory;
 import core.plugin.monkey.core.Builder;
+import core.plugin.monkey.core.LogManager;
 import core.plugin.monkey.core.Monkey;
 import core.plugin.monkey.core.TextPrinter;
 import core.plugin.monkey.win.base.BaseWin;
@@ -36,6 +42,12 @@ public class DeviceWin extends BaseWin {
     @Override
     public JPanel getContentPanel() {
         return contentPanel;
+    }
+    
+    @Override
+    public void onAttached(Project project, WinFactory factory, Content content) {
+        super.onAttached(project, factory, content);
+        content.setCloseable(true);
     }
     
     public DeviceWin(String device) {
@@ -68,12 +80,18 @@ public class DeviceWin extends BaseWin {
         if (needConfig) {
             new BuilderDlg().setListener((config, cmd) -> {
                 DeviceWin.this.config = config;
-                monkey.submit(cmd, logPrinter);
+                doRun(cmd);
             }).show();
         } else {
             String cmd = config.build();
-            monkey.submit(cmd, logPrinter);
+            doRun(cmd);
         }
+    }
+    
+    private void doRun(String cmd) {
+        String basePath = getProject().getBasePath();
+        File logfile = LogManager.getInstance().newLogFile(basePath);
+        monkey.submit(cmd, logPrinter, logfile);
     }
     
     private void stop() {

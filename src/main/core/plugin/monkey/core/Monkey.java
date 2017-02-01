@@ -1,15 +1,20 @@
 package core.plugin.monkey.core;
 
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.WriteAction;
+
 import org.jetbrains.annotations.NotNull;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import core.plugin.monkey.util.DataUtil;
+import core.plugin.monkey.util.FileUtil;
 import core.plugin.monkey.util.IOUtil;
 import core.plugin.monkey.util.TextUtil;
 
@@ -38,20 +43,46 @@ public class Monkey {
     
     public static final int TIMES_INFINITE = -1;
     
-    public void submit(String cmd, LogPrinter printer) {
-        submit(cmd, printer, 1);
+    public void submit(String cmd, Runner.Listener printer, @NotNull File logfile) {
+        submit(cmd, printer, logfile, 1);
     }
     
-    public void submit(String cmd, LogPrinter printer, int times) {
-        submit(new Runner(this, cmd, printer, times));
+    public void submit(String cmd, Runner.Listener listener, @NotNull File logfile, int times) {
+        doSubmit(new Runner(this, cmd, new SimpleRunnerListener(listener) {
+            @Override
+            public void onFinish(Runner runner) {
+                super.onFinish(runner);
+                ByteArrayOutputStream out = runner.getLog();
+                if (out != null) {
+                    writeLog(out, logfile);
+                }
+            }
+        }, times));
     }
     
-    private ExecutorService executor = Executors.newSingleThreadExecutor();
+    private void writeLog(ByteArrayOutputStream log, File logfile) {
+        ApplicationManager.getApplication().invokeLater(() -> {
+            try {
+                WriteAction.run(() -> {
+                    FileOutputStream fos = null;
+                    try {
+                        File target = FileUtil.getOrCreateFile(logfile);
+                        fos = new FileOutputStream(target);
+                        log.writeTo(fos);
+                    } finally {
+                        IOUtil.close(fos);
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
     
-    private void submit(Runner runner) {
+    private void doSubmit(Runner runner) {
         clearRunner();
         this.runner = runner;
-        executor.submit(runner);
+        runner.start();
     }
     
     private void clearRunner() {

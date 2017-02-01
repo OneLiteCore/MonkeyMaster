@@ -3,6 +3,7 @@ package core.plugin.monkey.core;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -15,10 +16,19 @@ import core.plugin.monkey.util.IOUtil;
  */
 class Runner extends Thread {
     
+    public interface Listener {
+        
+        void onStart(Runner runner);
+        
+        void print(String line);
+        
+        void onFinish(Runner runner);
+    }
+    
     private final Monkey monkey;
     private final String cmd;
     @Nullable
-    private final LogPrinter printer;
+    private final Listener listener;
     private final int times;
     
     public String getCmd() {
@@ -31,70 +41,65 @@ class Runner extends Thread {
     
     private static final int TIMES_INFINITE = Monkey.TIMES_INFINITE;
     
-    Runner(Monkey monkey, String cmd, @Nullable LogPrinter printer, int times) {
+    Runner(Monkey monkey, String cmd, @Nullable Listener listener, int times) {
         this.monkey = monkey;
         this.cmd = cmd;
-        this.printer = printer;
+        this.listener = listener;
         if (times <= 0) {
             times = TIMES_INFINITE;
         }
         this.times = times;
     }
     
-    interface Listener{
-        
-        void onStart(Runner runner);
-        
-        void onDone(Runner runner);
-        
-    }
+    private ByteArrayOutputStream log;
     
-    private Listener listener;
-    
-    public Runner setListener(Listener listener) {
-        this.listener = listener;
-        return this;
+    public ByteArrayOutputStream getLog() {
+        return log;
     }
     
     @Override
     public void run() {
         super.run();
-        if(listener != null){
+        if (listener != null) {
             listener.onStart(this);
         }
         
         int times = this.times;
+        log = new ByteArrayOutputStream();
         try {
             while (!isInterrupted() && (this.times == TIMES_INFINITE || times-- > 0)) {
                 doExec();
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
-            IOUtil.close(printer);
         }
-    
-        if(listener != null){
-            listener.onDone(this);
+        
+        if (listener != null) {
+            listener.onFinish(this);
         }
     }
     
+    private static final byte[] LINE_SEPERATOR = "\n".getBytes();
+    
     private void doExec() throws IOException {
-        BufferedReader reader = null;
-        try {
-            Process process = monkey.execShell(cmd);
-            if (printer != null) {
-                InputStream in = process.getInputStream();
-                if (in != null) {
+        Process process = monkey.execShell(cmd);
+        if (listener != null) {
+            InputStream in = process.getInputStream();
+            if (in != null) {
+                BufferedReader reader = null;
+                try {
                     reader = new BufferedReader(new InputStreamReader(in));
                     String line;
                     while (!isInterrupted() && (line = reader.readLine()) != null) {
-                        printer.print(line);
+                        log.write(line.getBytes());
+                        log.write(LINE_SEPERATOR);
+                        listener.print(line);
                     }
+                } finally {
+                    IOUtil.close(reader);
                 }
             }
-        } finally {
-            IOUtil.close(reader);
         }
     }
+    
 }
