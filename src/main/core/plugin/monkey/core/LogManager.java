@@ -20,7 +20,7 @@ public class LogManager {
     
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
     public static final String LOG_DIR = "/monkey";
-    public static final String LOG_EXT = "log";
+    public static final String LOG_EXT = "monkey";
     
     private String lastLog;
     private long lastTime;
