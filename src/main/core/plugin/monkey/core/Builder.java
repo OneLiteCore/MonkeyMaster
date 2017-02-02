@@ -70,7 +70,7 @@ public class Builder implements Serializable, Cloneable {
     
     private static final String KEY_MONKEY = "monkey";
     
-    public String build() {
+    public Runner build() {
         CmdBuilder builder = new CmdBuilder();
         builder.appendKey(KEY_MONKEY);
         
@@ -136,7 +136,8 @@ public class Builder implements Serializable, Cloneable {
         
         builder.append(count);
         
-        return builder.toString();
+        String cmd = builder.toString();
+        return new Runner(cmd, times);
     }
 
     /*Monkey参数*/
@@ -609,6 +610,26 @@ public class Builder implements Serializable, Cloneable {
     public Builder setCount(long count) {
         this.count = count;
         return this;
+    }
+    
+    /*额外参数*/
+    
+    public static final int TIMES_INFINITE = Runner.TIMES_INFINITE;
+    
+    private int times = 1;
+    
+    public Builder setTimes(int times) {
+        if (times == 0) {
+            throw new IllegalArgumentException();
+        } else if (times < 0) {
+            times = TIMES_INFINITE;
+        }
+        this.times = times;
+        return this;
+    }
+    
+    public int getTimes() {
+        return times;
     }
     
     /*简化*/

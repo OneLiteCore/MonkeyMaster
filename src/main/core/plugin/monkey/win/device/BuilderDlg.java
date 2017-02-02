@@ -10,6 +10,8 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import core.plugin.monkey.core.Builder;
+import core.plugin.monkey.util.Callback;
+import core.plugin.monkey.util.SimpleCallback;
 import core.plugin.monkey.win.base.BaseDlg;
 
 /**
@@ -43,16 +45,10 @@ public class BuilderDlg extends BaseDlg {
         this.config = config != null ? config.clone() : new Builder();
     }
     
-    public interface Listener {
-        
-        void onBuilt(Builder config, String cmd);
-        
-    }
+    private Callback<Builder> callback;
     
-    private Listener listener;
-    
-    public BuilderDlg setListener(Listener listener) {
-        this.listener = listener;
+    public BuilderDlg setCallback(Callback<Builder> callback) {
+        this.callback = callback;
         return this;
     }
     
@@ -61,15 +57,15 @@ public class BuilderDlg extends BaseDlg {
     protected Action[] createActions() {
         return new Action[]{new DialogWrapperAction("Run") {
             
+            @SuppressWarnings("unchecked")
             @Override
             protected void doAction(ActionEvent actionEvent) {
                 dispose();
                 generalPanel.apply(config);
                 debugPanel.apply(config);
                 eventPanel.apply(config);
-                if (listener != null) {
-                    listener.onBuilt(config, config.build());
-                }
+                
+                SimpleCallback.call(config, callback);
             }
         }, getCancelAction()};
     }

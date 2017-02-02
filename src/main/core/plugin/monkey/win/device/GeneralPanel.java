@@ -2,6 +2,7 @@ package core.plugin.monkey.win.device;
 
 import java.util.List;
 
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JPanel;
@@ -25,6 +26,8 @@ public class GeneralPanel extends JPanel implements BuilderDlg.ConfigPanel {
     private JComboBox logLevelCombo;
     private JFormattedTextField throttleTxt;
     private JFormattedTextField countTxt;
+    private JTextField textField1;
+    private JCheckBox infinityCheckBox;
     
     public GeneralPanel() {
         throttleTxt.setDocument(new DecimalDoc());
@@ -58,6 +61,8 @@ public class GeneralPanel extends JPanel implements BuilderDlg.ConfigPanel {
         
         throttleTxt.setText(String.valueOf(config.getThrottle()));
         countTxt.setText(String.valueOf(config.getCount()));
+        
+        infinityCheckBox.setSelected(config.getTimes() == Builder.TIMES_INFINITE);
     }
     
     @Override
@@ -80,6 +85,8 @@ public class GeneralPanel extends JPanel implements BuilderDlg.ConfigPanel {
         
         int idx = logLevelCombo.getSelectedIndex();
         config.setLogLevel(LogLevel.values()[idx]);
+        
+        config.setTimes(infinityCheckBox.isSelected() ? Builder.TIMES_INFINITE : 1);
     }
     
 }

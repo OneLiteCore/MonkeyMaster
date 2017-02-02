@@ -19,12 +19,12 @@
           </nested-form>
           <nested-form id="e8757" form-file="core/plugin/monkey/win/device/DebugPanel.form" binding="debugPanel">
             <constraints>
-              <tabbedpane title="Ignore"/>
+              <tabbedpane title="Debug"/>
             </constraints>
           </nested-form>
           <nested-form id="2c7f2" form-file="core/plugin/monkey/win/device/EventPanel.form" binding="eventPanel">
             <constraints>
-              <tabbedpane title="Percent"/>
+              <tabbedpane title="Event"/>
             </constraints>
           </nested-form>
         </children>

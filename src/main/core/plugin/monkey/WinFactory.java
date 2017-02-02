@@ -13,7 +13,6 @@ import java.util.List;
 
 import core.plugin.monkey.win.ConsoleWin;
 import core.plugin.monkey.win.DeviceWin;
-import core.plugin.monkey.win.LogfileWin;
 import core.plugin.monkey.win.base.BaseWin;
 
 /**
@@ -31,7 +30,6 @@ public class WinFactory implements ToolWindowFactory, Condition<Project> {
     }
     
     private ConsoleWin consoleWin;
-    private LogfileWin logfileWin;
     private List<DeviceWin> deviceWins;
     
     @Override
@@ -42,9 +40,6 @@ public class WinFactory implements ToolWindowFactory, Condition<Project> {
         
         consoleWin = new ConsoleWin();
         attach(consoleWin);
-        
-        logfileWin = new LogfileWin();
-        attach(logfileWin);
     }
     
     @Override

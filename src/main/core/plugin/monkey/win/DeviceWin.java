@@ -4,7 +4,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.ui.content.Content;
 
 import java.io.File;
-import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -16,6 +15,7 @@ import core.plugin.monkey.WinFactory;
 import core.plugin.monkey.core.Builder;
 import core.plugin.monkey.core.LogManager;
 import core.plugin.monkey.core.Monkey;
+import core.plugin.monkey.core.Runner;
 import core.plugin.monkey.core.TextPrinter;
 import core.plugin.monkey.win.base.BaseWin;
 import core.plugin.monkey.win.device.BuilderDlg;
@@ -55,7 +55,7 @@ public class DeviceWin extends BaseWin {
         this.device = device;
         this.monkey = new Monkey(device);
         runBtn.addActionListener(e -> startMonkey(false));
-        stopBtn.addActionListener(e -> stop());
+        stopBtn.addActionListener(e ->    monkey.terminal());
         settingBtn.addActionListener(e -> startMonkey(true));
         clearBtn.addActionListener(e -> logPrinter.clearLog());
         
@@ -78,28 +78,20 @@ public class DeviceWin extends BaseWin {
         }
         
         if (needConfig) {
-            new BuilderDlg().setListener((config, cmd) -> {
+            new BuilderDlg().setCallback((config) -> {
                 DeviceWin.this.config = config;
-                doRun(cmd);
+                doRun(config.build());
             }).show();
         } else {
-            String cmd = config.build();
-            doRun(cmd);
+            doRun(config.build());
         }
     }
     
-    private void doRun(String cmd) {
+    private void doRun(Runner runner) {
         String basePath = getProject().getBasePath();
         File logfile = LogManager.getInstance().newLogFile(basePath);
-        monkey.submit(cmd, logPrinter, logfile);
-    }
-    
-    private void stop() {
-        try {
-            monkey.terminal();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        runner.setListener(logPrinter);
+        monkey.submit(runner, logfile);
     }
     
 }

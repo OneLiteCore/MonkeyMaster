@@ -1,5 +1,7 @@
 package core.plugin.monkey.core;
 
+import com.intellij.openapi.application.ApplicationManager;
+
 import javax.swing.JTextArea;
 
 /**
@@ -27,13 +29,13 @@ public class TextPrinter extends SimpleRunnerListener {
     @Override
     public void print(String line) {
         super.print(line);
-        synchronized (textArea) {
+        ApplicationManager.getApplication().invokeLater(() -> {
             textArea.append(line);
             textArea.append("\n");
             if (autoScroll) {
                 textArea.setCaretPosition(textArea.getText().length());
             }
-        }
+        });
     }
     
     public synchronized void clearLog() {

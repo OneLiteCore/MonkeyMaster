@@ -41,23 +41,25 @@ public class Monkey {
     
     private Runner runner;
     
-    public static final int TIMES_INFINITE = -1;
-    
-    public void submit(String cmd, Runner.Listener printer, @NotNull File logfile) {
-        submit(cmd, printer, logfile, 1);
+    public void submit(Runner runner) {
+        submit(runner, null);
     }
     
-    public void submit(String cmd, Runner.Listener listener, @NotNull File logfile, int times) {
-        doSubmit(new Runner(this, cmd, new SimpleRunnerListener(listener) {
+    public void submit(Runner runner, File logfile) {
+        Runner.Listener listener = runner.getListener();
+        runner.setListener(new SimpleRunnerListener(listener) {
             @Override
             public void onFinish(Runner runner) {
                 super.onFinish(runner);
-                ByteArrayOutputStream out = runner.getLog();
-                if (out != null) {
-                    writeLog(out, logfile);
+                if (logfile != null) {
+                    ByteArrayOutputStream out = runner.getLog();
+                    if (out != null) {
+                        writeLog(out, logfile);
+                    }
                 }
             }
-        }, times));
+        });
+        doSubmit(runner);
     }
     
     private void writeLog(ByteArrayOutputStream log, File logfile) {
@@ -79,28 +81,34 @@ public class Monkey {
         });
     }
     
-    private void doSubmit(Runner runner) {
-        clearRunner();
+    private synchronized void doSubmit(Runner runner) {
+        if (this.runner == runner) {
+            return;
+        }
+        terminal();
         this.runner = runner;
+        runner.setup(this);
         runner.start();
     }
     
-    private void clearRunner() {
+    private synchronized void clearRunner() throws InterruptedException {
         if (runner != null) {
             try {
                 runner.interrupt();
                 runner.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             } finally {
                 runner = null;
             }
         }
     }
     
-    public void terminal() throws IOException {
-        clearRunner();
-        killMonkeyProcess();
+    public void terminal() {
+        try {
+            clearRunner();
+            killMonkeyProcess();
+        } catch (InterruptedException | IOException e) {
+            e.printStackTrace();
+        }
     }
     
     Process execShell(String cmd) throws IOException {
