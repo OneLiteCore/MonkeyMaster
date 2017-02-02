@@ -79,9 +79,7 @@ public class GeneralPanel extends JPanel implements BuilderDlg.ConfigPanel {
         }
         
         long count = DataUtil.parseLong(countTxt.getText());
-        if (count > 0) {
-            config.setCount(count);
-        }
+        config.setCount(count);
         
         int idx = logLevelCombo.getSelectedIndex();
         config.setLogLevel(LogLevel.values()[idx]);
