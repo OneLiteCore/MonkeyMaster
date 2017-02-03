@@ -32,6 +32,10 @@ public class WinFactory implements ToolWindowFactory, Condition<Project> {
     private ConsoleWin consoleWin;
     private List<DeviceWin> deviceWins;
     
+    public ConsoleWin getConsoleWin() {
+        return consoleWin;
+    }
+    
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
         this.project = project;

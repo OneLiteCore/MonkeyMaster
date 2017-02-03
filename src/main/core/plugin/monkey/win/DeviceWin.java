@@ -55,7 +55,7 @@ public class DeviceWin extends BaseWin {
         this.device = device;
         this.monkey = new Monkey(device);
         runBtn.addActionListener(e -> startMonkey(false));
-        stopBtn.addActionListener(e ->    monkey.terminal());
+        stopBtn.addActionListener(e -> monkey.terminal());
         settingBtn.addActionListener(e -> startMonkey(true));
         clearBtn.addActionListener(e -> logPrinter.clearLog());
         
@@ -90,6 +90,17 @@ public class DeviceWin extends BaseWin {
     private void doRun(Runner runner) {
         String basePath = getProject().getBasePath();
         File logfile = LogManager.getInstance().newLogFile(basePath);
+        
+        String cmd = runner.getCmd();
+        ConsoleWin console = getFactory().getConsoleWin();
+        console.log("Monkey: " + cmd);
+        if (runner.getTimes() == Runner.TIMES_INFINITE) {
+            console.log("Infinity: true");
+        }
+        console.log("Device: " + monkey.getDevice());
+        console.log("logfile: " + logfile);
+        console.log("_____________________________________\n");
+        
         runner.setListener(logPrinter);
         monkey.submit(runner, logfile);
     }

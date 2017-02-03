@@ -17,6 +17,11 @@ public class ConsoleWin extends BaseWin {
     private JTextArea logTxt;
     private JButton createBtn;
     
+    public ConsoleWin() {
+        super(TITLE);
+        createBtn.addActionListener(e -> showDeviceDlg());
+    }
+    
     @Override
     public JPanel getContentPanel() {
         return contentPanel;
@@ -24,14 +29,13 @@ public class ConsoleWin extends BaseWin {
     
     public static final String TITLE = "Console";
     
-    public ConsoleWin() {
-        super(TITLE);
-        createBtn.addActionListener(e -> showDeviceDlg());
-    }
-    
     private void showDeviceDlg() {
         new SelectDeviceDlg().setCallback(s -> getFactory().attachDeviceWin(s)).show();
     }
     
+    public synchronized void log(String log) {
+        logTxt.append(log);
+        logTxt.append("\n");
+    }
 }
  
