@@ -61,6 +61,20 @@ public final class IOUtil {
         return str;
     }
     
+    public static void waste(@Nullable InputStream in) {
+        if (in != null) {
+            try {
+                byte[] buffer = new byte[1024];
+                while (in.read(buffer) != -1) {
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                close(in);
+            }
+        }
+    }
+    
     public static byte[] readQuietly(@Nullable InputStream in) {
         byte[] bytes = null;
         if (in != null) {

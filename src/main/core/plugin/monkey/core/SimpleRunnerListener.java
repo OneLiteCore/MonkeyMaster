@@ -1,5 +1,7 @@
 package core.plugin.monkey.core;
 
+import java.io.ByteArrayOutputStream;
+
 /**
  * @author DrkCore
  * @since 2017-02-01
@@ -23,16 +25,16 @@ public class SimpleRunnerListener implements Runner.Listener {
     }
     
     @Override
-    public void onStart(Runner runner) {
+    public void onStart() {
         if (listener != null) {
-            listener.onStart(runner);
+            listener.onStart();
         }
     }
     
     @Override
-    public void onFinish(Runner runner) {
+    public void onFinish(ByteArrayOutputStream out) {
         if (listener != null) {
-            listener.onFinish(runner);
+            listener.onFinish(out);
         }
     }
 }

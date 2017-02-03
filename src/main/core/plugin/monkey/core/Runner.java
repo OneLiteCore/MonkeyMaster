@@ -1,12 +1,13 @@
 package core.plugin.monkey.core;
 
-import org.jetbrains.annotations.Nullable;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.FutureTask;
 
 import core.plugin.monkey.util.IOUtil;
 
@@ -14,19 +15,32 @@ import core.plugin.monkey.util.IOUtil;
  * @author DrkCore
  * @since 2017-01-24
  */
-public class Runner extends Thread {
+public class Runner {
     
     public interface Listener {
         
-        void onStart(Runner runner);
+        void onStart();
         
         void print(String line);
         
-        void onFinish(Runner runner);
+        void onFinish(ByteArrayOutputStream out);
     }
+    
+    public static final int TIMES_INFINITE = -1;
     
     private final String cmd;
     private final int times;
+    private Monkey mMonkey;
+    private Listener listener;
+    
+    public Listener getListener() {
+        return listener;
+    }
+    
+    public Runner setListener(Listener listener) {
+        this.listener = listener;
+        return this;
+    }
     
     public String getCmd() {
         return cmd;
@@ -36,7 +50,13 @@ public class Runner extends Thread {
         return times;
     }
     
-    public static final int TIMES_INFINITE = -1;
+    public Runner setup(Monkey monkey) {
+        if (monkey == null) {
+            throw new IllegalArgumentException("Monkey must not be null");
+        }
+        this.mMonkey = monkey;
+        return this;
+    }
     
     Runner(String cmd, int times) {
         this.cmd = cmd;
@@ -46,76 +66,67 @@ public class Runner extends Thread {
         this.times = times;
     }
     
-    private Monkey mMonkey;
-    @Nullable
-    private Listener mListener;
+    /*执行*/
     
-    public Runner setup(Monkey monkey) {
-        if (monkey == null) {
-            throw new IllegalArgumentException("Monkey must not be null");
+    private FutureTask<ByteArrayOutputStream> task;
+    
+    void submit(Executor executor) {
+        if (task != null) {
+            throw new IllegalStateException();
         }
-        this.mMonkey = monkey;
-        return this;
+        
+        if (listener != null) {
+            listener.onStart();
+        }
+        task = new FutureTask<ByteArrayOutputStream>(this::exec) {
+            
+            @Override
+            protected void done() {
+                super.done();
+                if (listener != null) {
+                    try {
+                        listener.onFinish(get());
+                    } catch (InterruptedException | ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
     }
     
-    @Nullable
-    public Listener getListener() {
-        return mListener;
-    }
-    
-    public Runner setListener(@Nullable Listener listener) {
-        this.mListener = listener;
-        return this;
-    }
-    
-    private ByteArrayOutputStream log;
-    
-    public ByteArrayOutputStream getLog() {
-        return log;
-    }
-    
-    @Override
-    public void run() {
-        super.run();
+    private ByteArrayOutputStream exec() throws IOException {
         Monkey monkey = mMonkey;
         if (monkey == null) {
             throw new IllegalStateException("Runner has not been setup yet");
         }
         
-        if (mListener != null) {
-            mListener.onStart(this);
-        }
-        
         int times = this.times;
-        log = new ByteArrayOutputStream();
+        ByteArrayOutputStream log = new ByteArrayOutputStream();
         try {
-            while (!isInterrupted() && (this.times == TIMES_INFINITE || times-- > 0)) {
-                doExec(monkey);
+            while (!task.isCancelled() && (this.times == TIMES_INFINITE || times-- > 0)) {
+                doExec(monkey, log);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
-        if (mListener != null) {
-            mListener.onFinish(this);
-        }
+        return log;
     }
     
     private static final byte[] LINE_SEPERATOR = "\n".getBytes();
     
-    private void doExec(Monkey monkey) throws IOException {
+    private void doExec(Monkey monkey, ByteArrayOutputStream log) throws IOException {
         Process process = monkey.execShell(cmd);
-        if (mListener != null) {
+        if (listener != null) {
             InputStream in = process.getInputStream();
             if (in != null) {
                 BufferedReader reader = null;
                 try {
                     reader = new BufferedReader(new InputStreamReader(in));
                     String line;
-                    while (!isInterrupted() && (line = reader.readLine()) != null) {
+                    while (!task.isCancelled() && (line = reader.readLine()) != null) {
                         log.write(line.getBytes());
                         log.write(LINE_SEPERATOR);
-                        mListener.print(line);
+                        listener.print(line);
                     }
                 } finally {
                     IOUtil.close(reader);
@@ -124,4 +135,9 @@ public class Runner extends Thread {
         }
     }
     
+    void cancel() {
+        if (task != null) {
+            task.cancel(false);
+        }
+    }
 }

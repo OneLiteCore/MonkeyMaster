@@ -12,8 +12,9 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
-import core.plugin.monkey.util.DataUtil;
 import core.plugin.monkey.util.FileUtil;
 import core.plugin.monkey.util.IOUtil;
 import core.plugin.monkey.util.TextUtil;
@@ -37,7 +38,9 @@ public class Monkey {
         this.device = device;
     }
     
-    /*exec*/
+    /*monkey*/
+    
+    private final Executor executor = Executors.newSingleThreadExecutor();
     
     private Runner runner;
     
@@ -49,10 +52,9 @@ public class Monkey {
         Runner.Listener listener = runner.getListener();
         runner.setListener(new SimpleRunnerListener(listener) {
             @Override
-            public void onFinish(Runner runner) {
-                super.onFinish(runner);
+            public void onFinish(ByteArrayOutputStream out) {
+                super.onFinish(out);
                 if (logfile != null) {
-                    ByteArrayOutputStream out = runner.getLog();
                     if (out != null) {
                         writeLog(out, logfile);
                     }
@@ -88,17 +90,13 @@ public class Monkey {
         terminal();
         this.runner = runner;
         runner.setup(this);
-        runner.start();
+        runner.submit(executor);
     }
     
     private synchronized void clearRunner() throws InterruptedException {
         if (runner != null) {
-            try {
-                runner.interrupt();
-                runner.join();
-            } finally {
-                runner = null;
-            }
+            runner.cancel();
+            runner = null;
         }
     }
     
@@ -121,13 +119,13 @@ public class Monkey {
         ensureAdb();
         String pid = findMonkeyPid();
         if (pid != null) {
-            RUNTIME.exec("cmd.exe /c adb -s " + device + " shell kill " + pid);
+            execShell("kill " + pid);
         }
     }
     
     String findMonkeyPid() throws IOException {
         ensureAdb();
-        Process process = RUNTIME.exec("cmd.exe /c adb -s " + device + " shell \"ps|grep monkey\"");
+        Process process = execShell("\"ps|grep monkey\"");
         String info = IOUtil.readQuietly(process.getInputStream(), Charset.defaultCharset());
         //root      9542  76    1234904 40084 ffffffff b7726369 S com.android.commands.monkey
         String[] items = info != null ? info.split(" ") : null;
@@ -144,16 +142,17 @@ public class Monkey {
         return pid;
     }
     
-    /*cmd*/
+    /*adb*/
     
     private static final Runtime RUNTIME = Runtime.getRuntime();
+    private static final Executor ADB_EXECUTOR = Executors.newSingleThreadExecutor();
     
     private static void ensureAdb() {
         try {
             Process process = RUNTIME.exec("cmd.exe /c adb start-server");
             //读出缓冲区数据并等待进结束
-            IOUtil.readQuietly(process.getInputStream());
-            IOUtil.readQuietly(process.getErrorStream());
+            IOUtil.waste(process.getInputStream());
+            IOUtil.waste(process.getErrorStream());
             process.waitFor();
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
@@ -180,11 +179,6 @@ public class Monkey {
             }
         }
         return devices;
-    }
-    
-    public static String findFirstDevices() throws IOException {
-        List<String> devices = findDevices();
-        return DataUtil.getFirstQuietly(devices);
     }
     
 }
