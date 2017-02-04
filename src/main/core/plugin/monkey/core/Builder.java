@@ -1,5 +1,6 @@
 package core.plugin.monkey.core;
 
+import core.plugin.monkey.task.MonkeyTask;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
@@ -70,7 +71,7 @@ public class Builder implements Serializable, Cloneable {
     
     private static final String KEY_MONKEY = "monkey";
     
-    public Runner build() {
+    public MonkeyTask.Params build() {
         CmdBuilder builder = new CmdBuilder();
         builder.appendKey(KEY_MONKEY);
         
@@ -137,7 +138,7 @@ public class Builder implements Serializable, Cloneable {
         builder.append(count);
         
         String cmd = builder.toString();
-        return new Runner(cmd, times);
+        return new MonkeyTask.Params(cmd, times);
     }
 
     /*Monkey参数*/
@@ -614,7 +615,7 @@ public class Builder implements Serializable, Cloneable {
     
     /*额外参数*/
     
-    public static final int TIMES_INFINITE = Runner.TIMES_INFINITE;
+    public static final int TIMES_INFINITE = MonkeyTask.INFINITE;
     
     private int times = 1;
     

@@ -12,8 +12,8 @@ public class MonkeyTask extends CommandTask<MonkeyTask.Params, ByteArrayOutputSt
 
     public static class Params {
 
-        private final String cmd;
-        private final int times;
+        public final String cmd;
+        public final int times;
 
         public Params(String cmd, int times) {
             this.cmd = cmd;
