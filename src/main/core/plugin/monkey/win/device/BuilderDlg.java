@@ -4,12 +4,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.event.ActionEvent;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import core.plugin.monkey.core.Builder;
+import core.plugin.monkey.core.Monkey;
 import core.plugin.monkey.util.Callback;
 import core.plugin.monkey.util.SimpleCallback;
 import core.plugin.monkey.win.base.BaseDlg;
@@ -22,9 +24,9 @@ public class BuilderDlg extends BaseDlg {
     
     public interface ConfigPanel {
         
-        void adapt(Builder config);
+        void adapt(Monkey.Builder config);
         
-        void apply(Builder config);
+        void apply(Monkey.Builder config);
         
     }
     
@@ -33,21 +35,26 @@ public class BuilderDlg extends BaseDlg {
     private DebugPanel debugPanel;
     private EventPanel eventPanel;
     
-    private final Builder config;
+    private List<ConfigPanel> panels;
+    
+    private final Monkey.Builder config;
     
     public BuilderDlg() {
         this(null);
     }
     
-    public BuilderDlg(@Nullable Builder config) {
+    public BuilderDlg(@Nullable Monkey.Builder config) {
         super("Config Monkey Runner");
         
-        this.config = config != null ? config.clone() : new Builder();
+        this.config = config != null ? config.clone() : new Monkey.Builder();
+        
+        panels = Arrays.asList(generalPanel, debugPanel, eventPanel);
+        panels.forEach(configPanel -> configPanel.adapt(BuilderDlg.this.config));
     }
     
-    private Callback<Builder> callback;
+    private Callback<Monkey.Builder> callback;
     
-    public BuilderDlg setCallback(Callback<Builder> callback) {
+    public BuilderDlg setCallback(Callback<Monkey.Builder> callback) {
         this.callback = callback;
         return this;
     }
@@ -61,9 +68,8 @@ public class BuilderDlg extends BaseDlg {
             @Override
             protected void doAction(ActionEvent actionEvent) {
                 dispose();
-                generalPanel.apply(config);
-                debugPanel.apply(config);
-                eventPanel.apply(config);
+                
+                panels.forEach(configPanel -> configPanel.apply(BuilderDlg.this.config));
                 
                 SimpleCallback.call(config, callback);
             }
@@ -77,3 +83,4 @@ public class BuilderDlg extends BaseDlg {
     }
     
 }
+

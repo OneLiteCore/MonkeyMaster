@@ -1,4 +1,4 @@
-package core.plugin.monkey.task;
+package core.plugin.monkey.core;
 
 import java.io.ByteArrayOutputStream;
 

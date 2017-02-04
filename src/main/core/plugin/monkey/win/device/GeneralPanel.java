@@ -8,8 +8,8 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import core.plugin.monkey.core.Builder;
 import core.plugin.monkey.core.LogLevel;
+import core.plugin.monkey.core.Monkey;
 import core.plugin.monkey.util.DataUtil;
 import core.plugin.monkey.util.TextUtil;
 import core.plugin.monkey.win.base.DecimalDoc;
@@ -35,7 +35,7 @@ public class GeneralPanel extends JPanel implements BuilderDlg.ConfigPanel {
     }
     
     @Override
-    public void adapt(Builder config) {
+    public void adapt(Monkey.Builder config) {
         pkgsTxt.setText("");
         List<String> pkgs = config.getAllowedPackages();
         if (pkgs != null) {
@@ -62,11 +62,11 @@ public class GeneralPanel extends JPanel implements BuilderDlg.ConfigPanel {
         throttleTxt.setText(String.valueOf(config.getThrottle()));
         countTxt.setText(String.valueOf(config.getCount()));
         
-        infinityCheckBox.setSelected(config.getTimes() == Builder.TIMES_INFINITE);
+        infinityCheckBox.setSelected(config.getTimes() == Monkey.INFINITE);
     }
     
     @Override
-    public void apply(Builder config) {
+    public void apply(Monkey.Builder config) {
         String[] pkgs = !TextUtil.isEmpty(pkgsTxt.getText()) ? pkgsTxt.getText().split(" ") : null;
         config.setAllowedPackages(pkgs);
         
@@ -84,7 +84,7 @@ public class GeneralPanel extends JPanel implements BuilderDlg.ConfigPanel {
         int idx = logLevelCombo.getSelectedIndex();
         config.setLogLevel(LogLevel.values()[idx]);
         
-        config.setTimes(infinityCheckBox.isSelected() ? Builder.TIMES_INFINITE : 1);
+        config.setTimes(infinityCheckBox.isSelected() ? Monkey.INFINITE : 1);
     }
     
 }

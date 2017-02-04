@@ -3,7 +3,7 @@ package core.plugin.monkey.win.device;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
-import core.plugin.monkey.core.Builder;
+import core.plugin.monkey.core.Monkey;
 
 /**
  * @author DrkCore
@@ -23,7 +23,7 @@ public class DebugPanel extends JPanel implements BuilderDlg.ConfigPanel {
     private JCheckBox waitDbgCheckBox;
     
     @Override
-    public void adapt(Builder config) {
+    public void adapt(Monkey.Builder config) {
         ignoreCrashesCheckBox.setSelected(config.isIgnoreCrashes());
         ignoreTimeoutsCheckBox.setSelected(config.isIgnoreTimeouts());
         ignoreSecurityExceptionsCheckBox.setSelected(config.isIgnoreSecurityExceptions());
@@ -36,7 +36,7 @@ public class DebugPanel extends JPanel implements BuilderDlg.ConfigPanel {
     }
     
     @Override
-    public void apply(Builder config) {
+    public void apply(Monkey.Builder config) {
         config.setIgnoreCrashes(ignoreCrashesCheckBox.isSelected());
         config.setIgnoreTimeouts(ignoreTimeoutsCheckBox.isSelected());
         config.setIgnoreSecurityExceptions(ignoreSecurityExceptionsCheckBox.isSelected());

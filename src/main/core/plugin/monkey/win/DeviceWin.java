@@ -12,11 +12,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import core.plugin.monkey.WinFactory;
-import core.plugin.monkey.core.Builder;
+import core.plugin.monkey.core.Device;
 import core.plugin.monkey.core.LogManager;
 import core.plugin.monkey.core.Monkey;
 import core.plugin.monkey.core.TextPrinter;
-import core.plugin.monkey.task.MonkeyTask;
 import core.plugin.monkey.win.base.BaseWin;
 import core.plugin.monkey.win.device.BuilderDlg;
 
@@ -25,7 +24,7 @@ import core.plugin.monkey.win.device.BuilderDlg;
  * @since 2017-01-26
  */
 public class DeviceWin extends BaseWin {
-
+    
     private JPanel contentPanel;
     private JButton runBtn;
     private JButton stopBtn;
@@ -34,35 +33,33 @@ public class DeviceWin extends BaseWin {
     private JButton settingBtn;
     private JButton clearBtn;
     private JCheckBox scrollCheckBox;
-
+    
     public static final String TAG_DEVICE = "Device:";
-    private final String device;
-    private final Monkey monkey;
+    private final Device device;
     private TextPrinter logPrinter;
-
+    
     @Override
     public JPanel getContentPanel() {
         return contentPanel;
     }
-
+    
     @Override
     public void onAttached(Project project, WinFactory factory, Content content) {
         super.onAttached(project, factory, content);
         content.setCloseable(true);
     }
-
+    
     public DeviceWin(String device) {
         super(TAG_DEVICE + device);
-        this.device = device;
-
+        
         logPrinter = new TextPrinter(logTextArea);
-
-        this.monkey = new Monkey(device, logPrinter);
+        
+        this.device = new Device(device, logPrinter);
         runBtn.addActionListener(e -> startMonkey(false));
-        stopBtn.addActionListener(e -> monkey.terminal());
+        stopBtn.addActionListener(e -> this.device.terminal());
         settingBtn.addActionListener(e -> startMonkey(true));
         clearBtn.addActionListener(e -> logPrinter.clearLog());
-
+        
         scrollCheckBox.addChangeListener(e -> {
             System.out.println(scrollCheckBox.isSelected());
             logPrinter.setAutoScroll(scrollCheckBox.isSelected());
@@ -70,16 +67,16 @@ public class DeviceWin extends BaseWin {
     }
     
     /*运行*/
-
-    private Builder config;
-
+    
+    private Monkey.Builder config;
+    
     private void startMonkey(boolean needConfig) {
         if (config == null) {
             needConfig = true;
         }
-
+        
         if (needConfig) {
-            new BuilderDlg().setCallback((config) -> {
+            new BuilderDlg(config).setCallback((config) -> {
                 DeviceWin.this.config = config;
                 doRun(config.build());
             }).show();
@@ -87,21 +84,19 @@ public class DeviceWin extends BaseWin {
             doRun(config.build());
         }
     }
-
-    private void doRun(MonkeyTask.Params params) {
+    
+    private void doRun(Monkey monkey) {
         String basePath = getProject().getBasePath();
         File logfile = LogManager.getInstance().newLogFile(basePath);
-
+        
         ConsoleWin console = getFactory().getConsoleWin();
-        console.log("Monkey: " + params.cmd);
-        if (params.times == MonkeyTask.INFINITE) {
-            console.log("Infinity: true");
-        }
-        console.log("Device: " + monkey.getDevice());
+        console.log("Monkey: " + monkey.getCmd());
+        console.log("Infinity: " + monkey.isInfinite());
+        console.log("Device: " + device.getDevice());
         console.log("logfile: " + logfile);
         console.log("_____________________________________\n");
-
-        monkey.submit(params, logfile);
+        
+        device.submit(monkey, logfile);
     }
-
+    
 }

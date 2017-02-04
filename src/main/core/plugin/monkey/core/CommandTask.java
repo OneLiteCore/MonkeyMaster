@@ -1,10 +1,14 @@
-package core.plugin.monkey.task;
+package core.plugin.monkey.core;
+
+import org.jetbrains.annotations.Nullable;
+
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import core.plugin.monkey.util.IOUtil;
 import core.plugin.monkey.util.Task;
-import org.jetbrains.annotations.Nullable;
-
-import java.io.*;
 
 /**
  * @author DrkCore

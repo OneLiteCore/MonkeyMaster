@@ -1,11 +1,8 @@
-package core.plugin.monkey.task;
+package core.plugin.monkey.core;
 
 import java.io.ByteArrayOutputStream;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
-
-import core.plugin.monkey.util.IOUtil;
 
 /**
  * @author DrkCore

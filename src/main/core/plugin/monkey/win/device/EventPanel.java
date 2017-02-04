@@ -4,7 +4,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 
-import core.plugin.monkey.core.Builder;
+import core.plugin.monkey.core.Monkey;
 
 /**
  * @author DrkCore
@@ -34,9 +34,9 @@ public class EventPanel extends JPanel implements BuilderDlg.ConfigPanel {
     private JCheckBox anyeventPercentCheckBox;
     private JCheckBox pinchzoomPercentCheckBox;
     
-    private Builder config;
+    private Monkey.Builder config;
     
-    public EventPanel setConfig(Builder config) {
+    public EventPanel setConfig(Monkey.Builder config) {
         this.config = config;
         return this;
     }
@@ -66,7 +66,7 @@ public class EventPanel extends JPanel implements BuilderDlg.ConfigPanel {
     }
     
     @Override
-    public void adapt(Builder config) {
+    public void adapt(Monkey.Builder config) {
         set(touchPercentCheckBox, touchPctSlider, config.getPctTouch());
         set(motionPercentCheckBox, motionPctSlider, config.getPctMotion());
         set(trackballPercentCheckBox, trackballPctSlider, config.getPctTrackball());
@@ -80,7 +80,7 @@ public class EventPanel extends JPanel implements BuilderDlg.ConfigPanel {
     }
     
     @Override
-    public void apply(Builder config) {
+    public void apply(Monkey.Builder config) {
         config.setPctTouch(touchPercentCheckBox.isSelected() ? (float) touchPctSlider.getValue() : null);
         config.setPctMotion(motionPercentCheckBox.isSelected() ? (float) motionPctSlider.getValue() : null);
         config.setPctTrackball(trackballPercentCheckBox.isSelected() ? (float) trackballPctSlider.getValue() : null);
