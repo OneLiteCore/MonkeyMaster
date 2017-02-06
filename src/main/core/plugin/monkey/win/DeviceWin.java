@@ -2,6 +2,7 @@ package core.plugin.monkey.win;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.content.Content;
+import com.intellij.util.ui.UIUtil;
 
 import java.io.File;
 
@@ -51,6 +52,10 @@ public class DeviceWin extends BaseWin {
     
     public DeviceWin(String device) {
         super(TAG_DEVICE + device);
+    
+    
+        logTextArea.setBackground(UIUtil.getWindowColor());
+        logTextArea.setForeground(UIUtil.getActiveTextColor());
         
         logPrinter = new TextPrinter(logTextArea);
         
@@ -60,10 +65,7 @@ public class DeviceWin extends BaseWin {
         settingBtn.addActionListener(e -> startMonkey(true));
         clearBtn.addActionListener(e -> logPrinter.clearLog());
         
-        scrollCheckBox.addChangeListener(e -> {
-            System.out.println(scrollCheckBox.isSelected());
-            logPrinter.setAutoScroll(scrollCheckBox.isSelected());
-        });
+        scrollCheckBox.addChangeListener(e -> logPrinter.setAutoScroll(scrollCheckBox.isSelected()));
     }
     
     /*运行*/

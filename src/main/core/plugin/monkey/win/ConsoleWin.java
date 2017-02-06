@@ -1,5 +1,7 @@
 package core.plugin.monkey.win;
 
+import com.intellij.util.ui.UIUtil;
+
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
@@ -19,6 +21,8 @@ public class ConsoleWin extends BaseWin {
     
     public ConsoleWin() {
         super(TITLE);
+        logTxt.setBackground(UIUtil.getWindowColor());
+        logTxt.setForeground(UIUtil.getActiveTextColor());
         createBtn.addActionListener(e -> showDeviceDlg());
     }
     
