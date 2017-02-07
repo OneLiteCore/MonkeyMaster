@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>core.plugin.monkey</id>
     <name>MonkeyMaster</name>
-    <version>1.0</version>
+    <version>v1.0-alpha2</version>
     <vendor email="178456643@qq.com" url="https://github.com/DrkCore/MonkeyMaster">DrkCore</vendor>
 
     <description><![CDATA[

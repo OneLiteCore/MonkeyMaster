@@ -1,7 +1,6 @@
 package core.plugin.monkey.core;
 
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.WriteAction;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -55,20 +54,18 @@ public class Device {
         public void onSuccess(ByteArrayOutputStream out) {
             super.onSuccess(out);
             ApplicationManager.getApplication().invokeLater(() -> {
-                try {
-                    WriteAction.run(() -> {
-                        FileOutputStream fos = null;
-                        try {
-                            File target = FileUtil.getOrCreateFile(logfile);
-                            fos = new FileOutputStream(target);
-                            out.writeTo(fos);
-                        } finally {
-                            IOUtil.close(fos);
-                        }
-                    });
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                ApplicationManager.getApplication().runWriteAction(() -> {
+                    FileOutputStream fos = null;
+                    try {
+                        File target = FileUtil.getOrCreateFile(logfile);
+                        fos = new FileOutputStream(target);
+                        out.writeTo(fos);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        IOUtil.close(fos);
+                    }
+                });
             });
         }
     }
