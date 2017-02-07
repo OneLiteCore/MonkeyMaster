@@ -1,4 +1,7 @@
 *.class
+# Outputs dir
+out/
+monkey/
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
