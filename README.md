@@ -1,6 +1,8 @@
 # MonkeyMaster
 An Intellij Idea plugin help android developer to deal with monkey test command. Pre-release now available for you, though it may be not that stable, but it works, ^_^~.
 
+In the very beginning, MonkeyMaster may only support **WIN** os. I'm sure Linux support will be available in few days.
+
 # 1. Setup
 You will find MonkeyMaster in JetBrains repositories **when stable version is done**, before that, you have to install it manually:
 
@@ -18,5 +20,6 @@ If nothing worng, MonkeyMaster tool panel will be present in the bottom sidebar,
 ![Guide step 2](doc/imgs/Guide-Step-2.jpg)
 
 # 3. TODO
+- Add Linux os support
 - Analyze logfile and locate problem.
 - UI retrofit.
