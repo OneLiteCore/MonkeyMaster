@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import core.plugin.monkey.log.LogManager;
 import core.plugin.monkey.win.ConsoleWin;
 import core.plugin.monkey.win.DeviceWin;
 import core.plugin.monkey.win.base.BaseWin;
@@ -21,9 +22,12 @@ import core.plugin.monkey.win.base.BaseWin;
  */
 public class WinFactory implements ToolWindowFactory, Condition<Project> {
     
-    private Project project;
-    private ToolWindow toolWin;
+    private String basePath;
     private ContentManager mgr;
+    
+    public String getBasePath() {
+        return basePath;
+    }
     
     @Override
     public void init(ToolWindow window) {
@@ -38,9 +42,9 @@ public class WinFactory implements ToolWindowFactory, Condition<Project> {
     
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
-        this.project = project;
-        this.toolWin = toolWindow;
-        this.mgr = toolWin.getContentManager();
+        this.basePath = project.getBasePath();
+        LogManager.getInstance(basePath);
+        this.mgr = toolWindow.getContentManager();
         
         consoleWin = new ConsoleWin();
         attach(consoleWin);
@@ -69,7 +73,7 @@ public class WinFactory implements ToolWindowFactory, Condition<Project> {
     
     public void attach(BaseWin win, boolean focus) {
         Content content = mgr.getFactory().createContent(win.getContentPanel(), win.getTitle(), false);
-        win.onAttached(project, this, content);
+        win.onAttached(this, content);
         mgr.addContent(content);
         
         if (focus) {

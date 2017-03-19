@@ -1,9 +1,6 @@
 package core.plugin.monkey.win;
 
-import com.intellij.openapi.project.Project;
 import com.intellij.ui.content.Content;
-
-import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -13,9 +10,8 @@ import javax.swing.JTextArea;
 
 import core.plugin.monkey.WinFactory;
 import core.plugin.monkey.core.Device;
-import core.plugin.monkey.core.LogManager;
 import core.plugin.monkey.core.Monkey;
-import core.plugin.monkey.core.TextPrinter;
+import core.plugin.monkey.log.TextPrinter;
 import core.plugin.monkey.win.base.BaseWin;
 import core.plugin.monkey.win.device.BuilderDlg;
 
@@ -44,8 +40,8 @@ public class DeviceWin extends BaseWin {
     }
     
     @Override
-    public void onAttached(Project project, WinFactory factory, Content content) {
-        super.onAttached(project, factory, content);
+    public void onAttached(WinFactory factory, Content content) {
+        super.onAttached(factory, content);
         content.setCloseable(true);
     }
     
@@ -54,7 +50,9 @@ public class DeviceWin extends BaseWin {
         
         logPrinter = new TextPrinter(logTextArea);
         
-        this.device = new Device(device, logPrinter);
+        this.device = new Device(device);
+        this.device.setListener(logPrinter);
+        
         runBtn.addActionListener(e -> startMonkey(false));
         stopBtn.addActionListener(e -> this.device.terminal());
         settingBtn.addActionListener(e -> startMonkey(true));
@@ -86,17 +84,13 @@ public class DeviceWin extends BaseWin {
     }
     
     private void doRun(Monkey monkey) {
-        String basePath = getProject().getBasePath();
-        File logfile = LogManager.getInstance().newLogFile(basePath);
-        
         ConsoleWin console = getFactory().getConsoleWin();
         console.log("Monkey: " + monkey.getCmd());
         console.log("Infinity: " + monkey.isInfinite());
         console.log("Device: " + device.getDevice());
-        console.log("logfile: " + logfile);
         console.log("_____________________________________\n");
         
-        device.submit(monkey, logfile);
+        device.submit(monkey);
     }
     
 }

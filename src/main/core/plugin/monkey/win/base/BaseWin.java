@@ -41,7 +41,7 @@ public abstract class BaseWin implements Icons {
         return content;
     }
     
-    public void onAttached(Project project, WinFactory factory, Content content) {
+    public void onAttached(WinFactory factory, Content content) {
         if (this.project != null ||this.factory != null || this.content != null) {
             throw new IllegalStateException("Win could only be attached once");
         }

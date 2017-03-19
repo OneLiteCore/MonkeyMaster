@@ -1,24 +1,23 @@
 package core.plugin.monkey.core;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import core.plugin.monkey.util.IOUtil;
 
 /**
  * @author DrkCore
  * @since 2017-02-04
  */
-public class FindDevicesTask extends CommandTask<Void,List<String>> {
+public class FindDevicesTask extends CmdTask<Void, Void, List<String>> {
     
     @Override
     protected List<String> doInBack(Void aVoid) throws Exception {
-        ensureAdb();
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        execCommand("cmd.exe /c adb devices",out);
-        String info = out.toString();
+        ensureAdb().waitFor();
+        
+        String info = IOUtil.read(execCmd("adb devices"));
         String[] lines = info.split("\r|\n");
-    
+        
         int len = lines.length;
         List<String> devices = new ArrayList<>(len);
         for (int i = 0; i < len; i++) {

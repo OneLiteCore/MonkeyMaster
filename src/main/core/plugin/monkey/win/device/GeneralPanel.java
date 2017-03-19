@@ -8,7 +8,7 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import core.plugin.monkey.core.LogLevel;
+import core.plugin.monkey.log.LogLevel;
 import core.plugin.monkey.core.Monkey;
 import core.plugin.monkey.util.DataUtil;
 import core.plugin.monkey.util.TextUtil;

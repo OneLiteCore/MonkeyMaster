@@ -51,17 +51,19 @@ public abstract class Task<Params, Progress, Result> {
         return params;
     }
     
-    private boolean executed;
+    private volatile boolean executed;
     
     public boolean isExecuted() {
         return executed;
     }
     
     public final synchronized Task<Params, Progress, Result> exec(@Nullable Executor executor, Params params) {
-        if (executed) {
-            throw new IllegalStateException();
+        synchronized (this) {
+            if (executed) {
+                throw new IllegalStateException();
+            }
+            executed = true;
         }
-        executed = true;
         
         this.params = params;
         onStart();
@@ -91,6 +93,16 @@ public abstract class Task<Params, Progress, Result> {
     
     public final boolean cancel(boolean mayInterruptIfRunning) {
         return task.cancel(mayInterruptIfRunning);
+    }
+    
+    public boolean waitFor() {
+        try {
+            get();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
     
     public Result get() throws InterruptedException, ExecutionException {

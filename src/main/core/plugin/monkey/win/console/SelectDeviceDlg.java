@@ -58,15 +58,15 @@ public class SelectDeviceDlg extends BaseDlg {
     
     @SuppressWarnings("unchecked")
     public void refresh() {
-        new FindDevicesTask().addListener(new OnTaskListenerImpl<String, List<String>>() {
+        new FindDevicesTask().addListener(new OnTaskListenerImpl<Void, List<String>>() {
             @Override
             public void onSuccess(List<String> devices) {
                 model.clear();
-                
+
                 if (!DataUtil.isEmpty(devices)) {
                     devices.forEach(model::addElement);
                 }
-                
+
                 deviceList.setModel(model);
                 CardLayout layout = (CardLayout) contentPanel.getLayout();
                 layout.show(contentPanel, !model.isEmpty() ? CARD_DEVICES : CARD_EMPTY);

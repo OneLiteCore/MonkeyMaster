@@ -2,11 +2,16 @@ package core.plugin.monkey.util;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.Flushable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
@@ -20,6 +25,17 @@ import java.nio.charset.Charset;
 public final class IOUtil {
     
     private IOUtil() {
+    }
+    
+    public static BufferedReader open(File file) throws FileNotFoundException {
+        return open(file, null);
+    }
+    
+    public static BufferedReader open(File file, @Nullable Charset charset) throws FileNotFoundException {
+        charset = charset != null ? charset : Charset.defaultCharset();
+        FileInputStream in = new FileInputStream(file);
+        InputStreamReader reader = new InputStreamReader(in, charset);
+        return new BufferedReader(reader);
     }
     
     /**
@@ -85,6 +101,10 @@ public final class IOUtil {
             }
         }
         return bytes;
+    }
+    
+    public static String read(Process process) throws IOException {
+        return read(process.getInputStream(), Charset.defaultCharset());
     }
     
     public static String read(InputStream in, Charset charset) throws IOException {
