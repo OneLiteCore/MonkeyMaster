@@ -53,7 +53,7 @@ public abstract class LogfilePublisher extends OnTaskListenerImpl<MonkeyTask.Pro
         return thread;
     }
     
-    private static final long SLEEP_TIME = 1000;
+    private static final long SLEEP_TIME = 500;
     
     private class ReadThread extends Thread {
         
@@ -94,7 +94,6 @@ public abstract class LogfilePublisher extends OnTaskListenerImpl<MonkeyTask.Pro
                         onLog(line);
                         
                     } else if (process.isAlive()) {//Wait for next log
-                        onLog("等待一下………………………………………………………………………………………………………………");
                         try {
                             Thread.sleep(SLEEP_TIME);
                         } catch (Throwable e) {
