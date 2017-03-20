@@ -10,7 +10,7 @@ import core.plugin.monkey.log.ILogCreator;
  * @author DrkCore
  * @since 2017/2/4
  */
-public class MonkeyTask extends CmdTask<MonkeyTask.Params, File, Void> {
+public class MonkeyTask extends CmdTask<MonkeyTask.Params, MonkeyTask.Progress, Void> {
     
     private static final int INFINITE = Monkey.INFINITE;
     
@@ -39,15 +39,37 @@ public class MonkeyTask extends CmdTask<MonkeyTask.Params, File, Void> {
         }
     }
     
+    public static class Progress {
+        
+        public final Process process;
+        public final File output;
+        
+        public Progress(Process process) {
+            this(process, null);
+        }
+        
+        public Progress(Process process, File output) {
+            this.process = process;
+            this.output = output;
+        }
+    }
+    
+    private static final long SLEEP_TIME = 1000;
+    
     @Override
     protected Void doInBack(Params params) throws Exception {
         int leftTimes = params.times;
         while (!isCancelled() && (params.times == Monkey.INFINITE || leftTimes-- > 0)) {
             File logfile = params.logCreator != null ? params.logCreator.newLogFile() : null;
-            if (logfile != null) {
-                publishProgress(logfile);
+            Process process = execShell(params.cmd, params.device, logfile);
+            publishProgress(new Progress(process, logfile));
+            process.waitFor();
+            
+            try {
+                Thread.sleep(SLEEP_TIME);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-            execShell(params.cmd, params.device, logfile).waitFor();
         }
         return null;
     }

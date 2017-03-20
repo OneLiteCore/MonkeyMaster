@@ -226,6 +226,10 @@ public final class FileUtil {
         }
     }
     
+    public static boolean canRead(@Nullable File file) {
+        return file != null && file.isFile() && file.canRead();
+    }
+    
     public static final String NO_MEDIA = ".nomedia";
     
     /**

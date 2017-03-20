@@ -2,7 +2,6 @@ package core.plugin.monkey.core;
 
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -35,9 +34,9 @@ public class Device {
     /*monkey*/
     
     private final Executor executor = Executors.newCachedThreadPool();
-    private Task.OnTaskListener<File, Void> listener;
+    private Task.OnTaskListener<MonkeyTask.Progress, Void> listener;
     
-    public Device setListener(Task.OnTaskListener<File, Void> listener) {
+    public Device setListener(Task.OnTaskListener<MonkeyTask.Progress, Void> listener) {
         this.listener = listener;
         return this;
     }
