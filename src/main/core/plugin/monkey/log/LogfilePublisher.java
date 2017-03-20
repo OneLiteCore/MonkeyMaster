@@ -88,17 +88,21 @@ public abstract class LogfilePublisher extends OnTaskListenerImpl<MonkeyTask.Pro
         private void read(Process process, File logfile) throws Throwable {
             try (BufferedReader reader = IOUtil.open(logfile)) {
                 String line;
-                while (running && process.isAlive()) {
+                while (running) {
                     line = reader.readLine();
                     if (line != null) {
                         onLog(line);
                         
-                    } else {//Wait for next log
+                    } else if (process.isAlive()) {//Wait for next log
+                        onLog("等待一下………………………………………………………………………………………………………………");
                         try {
                             Thread.sleep(SLEEP_TIME);
                         } catch (Throwable e) {
                             e.printStackTrace();
                         }
+                        
+                    } else {
+                        break;
                     }
                 }
             }
