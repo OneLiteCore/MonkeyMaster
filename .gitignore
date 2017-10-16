@@ -15,7 +15,4 @@
 hs_err_pid*
 
 # config
-/.idea/dictionaries
-/.idea/encodings.xml
-/.idea/uiDesigner.xml
-/.idea/vcs.xml
+/.idea
