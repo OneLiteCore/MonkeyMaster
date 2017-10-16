@@ -17,7 +17,7 @@ import javax.swing.JPanel;
 import core.plugin.monkey.core.FindDevicesTask;
 import core.plugin.monkey.util.Callback;
 import core.plugin.monkey.util.DataUtil;
-import core.plugin.monkey.util.OnTaskListenerImpl;
+import core.plugin.monkey.util.task.OnTaskListenerImpl;
 import core.plugin.monkey.util.SimpleCallback;
 import core.plugin.monkey.util.TextUtil;
 import core.plugin.monkey.win.base.BaseDlg;

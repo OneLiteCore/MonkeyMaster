@@ -1,10 +1,13 @@
-package core.plugin.monkey.util;
+package core.plugin.monkey.util.task;
+
+import core.plugin.monkey.util.Callback;
+import core.plugin.monkey.util.SimpleCallback;
 
 /**
  * @author DrkCore
  * @since 2017-02-04
  */
-public class OnTaskListenerImpl<Progress, Result> implements Task.OnTaskListener<Progress, Result> {
+public class OnTaskListenerImpl<Progress, Result> implements AbsTask.OnTaskListener<Progress, Result> {
 
     private final Callback<Void> callback;
 

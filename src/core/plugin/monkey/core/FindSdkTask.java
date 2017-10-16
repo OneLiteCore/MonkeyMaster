@@ -3,7 +3,7 @@ package core.plugin.monkey.core;
 import java.io.File;
 import java.util.List;
 
-import core.plugin.monkey.util.SimpleTask;
+import core.plugin.monkey.util.task.SimpleTask;
 import core.plugin.monkey.util.TextUtil;
 
 /**

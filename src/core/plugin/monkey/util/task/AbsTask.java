@@ -1,4 +1,4 @@
-package core.plugin.monkey.util;
+package core.plugin.monkey.util.task;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,11 +12,13 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import core.plugin.monkey.util.DataUtil;
+
 /**
  * @author DrkCore
  * @since 2017-02-03
  */
-public abstract class Task<Params, Progress, Result> {
+public abstract class AbsTask<Params, Progress, Result> {
     
     private final FutureTask<Result> task = new FutureTask<Result>(() -> doInBack(getParams())) {
         
@@ -37,11 +39,11 @@ public abstract class Task<Params, Progress, Result> {
         }
     };
     
-    public final Task<Params, Progress, Result> exec() {
+    public final AbsTask<Params, Progress, Result> exec() {
         return exec(null);
     }
     
-    public final Task<Params, Progress, Result> exec(Params params) {
+    public final AbsTask<Params, Progress, Result> exec(Params params) {
         return exec(null, params);
     }
     
@@ -57,7 +59,7 @@ public abstract class Task<Params, Progress, Result> {
         return executed;
     }
     
-    public final synchronized Task<Params, Progress, Result> exec(@Nullable Executor executor, Params params) {
+    public final synchronized AbsTask<Params, Progress, Result> exec(@Nullable Executor executor, Params params) {
         synchronized (this) {
             if (executed) {
                 throw new IllegalStateException();
@@ -131,7 +133,7 @@ public abstract class Task<Params, Progress, Result> {
     
     private List<OnTaskListener<Progress, Result>> listeners;
     
-    public Task<Params, Progress, Result> addListener(OnTaskListener<Progress, Result> listener) {
+    public AbsTask<Params, Progress, Result> addListener(OnTaskListener<Progress, Result> listener) {
         if (listener != null) {
             if (listeners == null) {
                 listeners = new ArrayList<>();
