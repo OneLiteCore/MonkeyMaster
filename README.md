@@ -12,12 +12,12 @@ You will find MonkeyMaster in JetBrains repositories **when stable version is do
 
 If nothing worng, MonkeyMaster tool panel will be present in the bottom sidebar, like this:
 
-![Tool panel sample](doc/imgs/Tool-Panel-Sample.jpg)
+![Tool panel sample](docs/imgs/Tool-Panel-Sample.jpg)
 
 # 2. How to use
-![Guide step 1](doc/imgs/Guide-Step-1.jpg)
+![Guide step 1](docs/imgs/Guide-Step-1.jpg)
 
-![Guide step 2](doc/imgs/Guide-Step-2.jpg)
+![Guide step 2](docs/imgs/Guide-Step-2.jpg)
 
 # 3. TODO
 - Add Linux os support

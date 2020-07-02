@@ -8,8 +8,8 @@ import java.util.concurrent.Executors;
 import core.plugin.monkey.log.ILogCreator;
 import core.plugin.monkey.log.LogManager;
 import core.plugin.monkey.util.Callback;
-import core.plugin.monkey.util.task.OnTaskListenerImpl;
-import core.plugin.monkey.util.task.AbsTask;
+import core.plugin.monkey.util.OnTaskListenerImpl;
+import core.plugin.monkey.util.Task;
 import core.plugin.monkey.util.TextUtil;
 
 /**
@@ -34,9 +34,9 @@ public class Device {
     /*monkey*/
     
     private final Executor executor = Executors.newCachedThreadPool();
-    private AbsTask.OnTaskListener<MonkeyTask.Progress, Void> listener;
+    private Task.OnTaskListener<MonkeyTask.Progress, Void> listener;
     
-    public Device setListener(AbsTask.OnTaskListener<MonkeyTask.Progress, Void> listener) {
+    public Device setListener(Task.OnTaskListener<MonkeyTask.Progress, Void> listener) {
         this.listener = listener;
         return this;
     }

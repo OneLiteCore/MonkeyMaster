@@ -7,14 +7,14 @@ import java.io.IOException;
 
 import core.plugin.monkey.util.FileUtil;
 import core.plugin.monkey.util.OS;
-import core.plugin.monkey.util.task.AbsTask;
+import core.plugin.monkey.util.Task;
 import core.plugin.monkey.util.TextUtil;
 
 /**
  * @author DrkCore
  * @since 2017-02-04
  */
-public abstract class CmdTask<Params, Progress, Result> extends AbsTask<Params, Progress, Result> {
+public abstract class CmdTask<Params, Progress, Result> extends Task<Params, Progress, Result> {
     
     public static final Runtime RUNTIME = Runtime.getRuntime();
     

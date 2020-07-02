@@ -11,7 +11,7 @@ import java.util.concurrent.Executor;
 import core.plugin.monkey.core.MonkeyTask;
 import core.plugin.monkey.util.FileUtil;
 import core.plugin.monkey.util.IOUtil;
-import core.plugin.monkey.util.task.OnTaskListenerImpl;
+import core.plugin.monkey.util.OnTaskListenerImpl;
 
 /**
  * @author DrkCore
