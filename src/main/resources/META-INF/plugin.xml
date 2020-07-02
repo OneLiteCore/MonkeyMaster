@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>core.plugin.monkey</id>
     <name>MonkeyMaster</name>
-    <version>v1.0-alpha2</version>
+    <version>v1.1</version>
     <vendor email="178456643@qq.com" url="https://github.com/DrkCore/MonkeyMaster">DrkCore</vendor>
 
     <description><![CDATA[
@@ -9,12 +9,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
-      Beta Version now available.
+      Refactor some code and add support for IDEA 2020 version.
     ]]>
     </change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-    <idea-version since-build="145.0" />
+    <idea-version since-build="145.0"/>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
@@ -23,8 +23,7 @@
     -->
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow anchor="bottom" conditionClass="core.plugin.monkey.WinFactory"
-            factoryClass="core.plugin.monkey.WinFactory" id="Monkey" />
+        <toolWindow anchor="bottom" factoryClass="core.plugin.monkey.WinFactory" id="Monkey"/>
     </extensions>
 
     <actions>

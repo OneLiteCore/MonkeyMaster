@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'core.plugin'
-version '1.0-SNAPSHOT'
+version '1.1'
 
 repositories {
     mavenCentral()
@@ -28,6 +28,6 @@ compileTestKotlin {
 }
 patchPluginXml {
     changeNotes """
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>"""
+      Refactor some code and add support for IDEA 2020 version.
+      """
 }
