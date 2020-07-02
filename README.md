@@ -1,3 +1,9 @@
+# DEPRECATED
+
+This plugin project is no longer maintained.
+
+I thought making a plugin to help dealing with mokey command would be cool years ago when I just started working on Android development, but for now, **I think a simple script file could do better**. 
+
 # MonkeyMaster
 An Intellij Idea plugin help android developer to deal with monkey test command. Pre-release now available for you, though it may be not that stable, but it works, ^_^~.
 
@@ -12,7 +18,7 @@ You will find MonkeyMaster in JetBrains repositories **when stable version is do
 
 If nothing worng, MonkeyMaster tool panel will be present in the bottom sidebar, like this:
 
-![Tool panel sample](doc/imgs/Tool-Panel-Sample.jpg)
+![Tool panel sample](doc/imgs/Guide-Step-1.jpg)
 
 # 2. How to use
 ![Guide step 1](doc/imgs/Guide-Step-1.jpg)
